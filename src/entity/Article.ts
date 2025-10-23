@@ -23,6 +23,6 @@ export class Article {
   @Column()
   PublishedAt: Date;
 
-  @Column()
+  @Column({ nullable: true })
   UpdatedAt: Date;
 }

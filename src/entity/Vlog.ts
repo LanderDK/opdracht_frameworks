@@ -8,7 +8,7 @@ import {
   PrimaryColumn,
 } from "typeorm";
 import { Article } from "./Article";
-import { VideoFile } from "./VideoFile";
+import { VideoFile } from "./Videofile";
 
 @Entity()
 export class Vlog {
