@@ -11,15 +11,18 @@ import { VideoFile } from "./VideoFile";
 
 @Entity()
 export class Vlog {
-  @OneToOne(() => Article, (article) => article.ArticleId, { cascade: true })
   @PrimaryColumn()
-  @JoinColumn()
   VlogId: number;
 
-  @OneToOne(() => VideoFile, (videoFile) => videoFile.VideoFileId, {
-    cascade: true,
-    lazy: true,
-  })
-  @JoinColumn()
+  @OneToOne(() => Article, { cascade: true })
+  @JoinColumn({ name: "VlogId" }) // Zorg dat deze kolom gebruikt wordt
+  article: Article;
+
+  @Column()
   VideoFileId: number;
+
+  @OneToOne(() => VideoFile, { cascade: true, lazy: true })
+  @JoinColumn({ name: "VideoFileId" }) // Zorg dat deze kolom gebruikt wordt
+  videofile: VideoFile;
+
 }
