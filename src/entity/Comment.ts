@@ -4,19 +4,21 @@ import { Article } from "./Article";
 
 @Entity()
 export class Comment {
+  @PrimaryGeneratedColumn()
+  CommentId: number;
 
-    @PrimaryGeneratedColumn()
-    CommentId: number;
+  @Column()
+  Content: string;
 
-    @Column()
-    Content: string;
+  @Column()
+  PublishedAt: Date;
 
-    @Column()
-    PublishedAt: Date;
+  @ManyToOne(() => User, (user) => user.UserId, { cascade: true, eager: true })
+  UserId: number;
 
-    @ManyToOne(() => User, user => user.UserId, { cascade: true, eager: true })
-    UserId: number;
-
-    @ManyToOne(() => Article, article => article.ArticleId, { cascade: true, lazy: true })
-    ArticleId: number;
+  @ManyToOne(() => Article, (article) => article.ArticleId, {
+    cascade: true,
+    lazy: true,
+  })
+  ArticleId: number;
 }
