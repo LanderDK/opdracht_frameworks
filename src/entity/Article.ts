@@ -11,10 +11,10 @@ export class Article {
   @Column()
   ArticleType: string;
 
-  @Column()
+  @Column({ length: 2048 })
   Slug: string;
 
-  @Column()
+  @Column({ length: 8192 })
   Content: string;
 
     @Column("json")
