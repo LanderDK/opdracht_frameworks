@@ -11,10 +11,13 @@ import { Article } from "./Article";
 
 @Entity()
 export class Blog {
-  @OneToOne(() => Article, (article) => article.ArticleId, { cascade: true })
+
   @PrimaryColumn()
-  @JoinColumn()
   BlogId: number;
+
+  @OneToOne(() => Article, { cascade: true })
+  @JoinColumn({ name: "BlogId" })
+  article: Article;
 
   @Column()
   readtime: number; // in minutes
