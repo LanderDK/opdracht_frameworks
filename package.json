@@ -4,18 +4,21 @@
    "description": "Awesome project developed with TypeORM.",
    "type": "commonjs",
    "devDependencies": {
+      "@types/faker": "^6.6.8",
       "@types/node": "^22.13.10",
       "ts-node": "^10.9.2",
       "typescript": "^5.8.2"
    },
    "dependencies": {
       "dotenv": "^17.2.3",
+      "faker": "^5.5.3",
       "mysql2": "^3.14.0",
       "reflect-metadata": "^0.2.2",
       "typeorm": "0.3.27"
    },
    "scripts": {
       "start": "ts-node src/index.ts",
-      "typeorm": "typeorm-ts-node-commonjs"
+      "typeorm": "typeorm-ts-node-commonjs",
+      "seed": "ts-node src/seeds/index.ts"
    }
 }

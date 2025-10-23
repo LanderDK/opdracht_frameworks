@@ -17,8 +17,8 @@ export class Article {
   @Column({ length: 8192 })
   Content: string;
 
-    @Column("json")
-    Tags: string[]
+  @Column("json")
+  Tags: string[];
 
   @Column()
   PublishedAt: Date;

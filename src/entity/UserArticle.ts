@@ -1,10 +1,15 @@
-import { Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
+import {
+  Entity,
+  JoinColumn,
+  ManyToMany,
+  ManyToOne,
+  PrimaryColumn,
+} from "typeorm";
 import { User } from "./User";
 import { Article } from "./Article";
 
 @Entity()
 export class UserArticle {
-
   @PrimaryColumn()
   ArticleId: number;
 

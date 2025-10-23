@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
 import { User } from "./User";
 import { Article } from "./Article";
 
@@ -12,7 +18,6 @@ export class Comment {
 
   @Column()
   PublishedAt: Date;
-
 
   @Column()
   UserId: number;

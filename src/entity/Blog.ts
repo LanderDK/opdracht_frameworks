@@ -11,7 +11,6 @@ import { Article } from "./Article";
 
 @Entity()
 export class Blog {
-
   @PrimaryColumn()
   BlogId: number;
 
