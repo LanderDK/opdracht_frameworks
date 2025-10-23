@@ -15,14 +15,14 @@ export class Vlog {
   VlogId: number;
 
   @OneToOne(() => Article, { cascade: true })
-  @JoinColumn({ name: "VlogId" }) // Zorg dat deze kolom gebruikt wordt
+  @JoinColumn({ name: "VlogId" })
   article: Article;
 
   @Column()
   VideoFileId: number;
 
   @OneToOne(() => VideoFile, { cascade: true, lazy: true })
-  @JoinColumn({ name: "VideoFileId" }) // Zorg dat deze kolom gebruikt wordt
+  @JoinColumn({ name: "VideoFileId" })
   videofile: VideoFile;
 
 }
