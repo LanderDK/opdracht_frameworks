@@ -1,6 +1,7 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
+  PrimaryColumn,
   Column,
   ForeignKey,
   OneToOne,
@@ -11,6 +12,7 @@ import { Article } from "./Article";
 @Entity()
 export class Blog {
   @OneToOne(() => Article, (article) => article.ArticleId, { cascade: true })
+  @PrimaryColumn()
   @JoinColumn()
   BlogId: number;
 

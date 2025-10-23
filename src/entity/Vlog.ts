@@ -4,7 +4,7 @@ import {
   Column,
   ForeignKey,
   OneToOne,
-  JoinColumn,
+  JoinColumn, PrimaryColumn,
 } from "typeorm";
 import { Article } from "./Article";
 import { VideoFile } from "./VideoFile";
@@ -12,6 +12,7 @@ import { VideoFile } from "./VideoFile";
 @Entity()
 export class Vlog {
   @OneToOne(() => Article, (article) => article.ArticleId, { cascade: true })
+  @PrimaryColumn()
   @JoinColumn()
   VlogId: number;
 

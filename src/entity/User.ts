@@ -8,8 +8,8 @@ export class User {
   @Column()
   Username: string;
 
-  @Column()
-  Roles: string[];
+    @Column("json")
+    Roles: string[]
 
   @Column()
   Email: string;

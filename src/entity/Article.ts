@@ -17,8 +17,8 @@ export class Article {
   @Column()
   Content: string;
 
-  @Column()
-  Tags: string[];
+    @Column("json")
+    Tags: string[]
 
   @Column()
   PublishedAt: Date;
