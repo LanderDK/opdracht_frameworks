@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { User } from "./User";
 import { Article } from "./Article";
 
@@ -13,12 +13,18 @@ export class Comment {
   @Column()
   PublishedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.UserId, { cascade: true, eager: true })
+
+  @Column()
   UserId: number;
 
-  @ManyToOne(() => Article, (article) => article.ArticleId, {
-    cascade: true,
-    lazy: true,
-  })
+  @ManyToOne(() => User, { cascade: true, eager: true })
+  @JoinColumn({ name: "UserId" })
+  user: User;
+
+  @Column()
   ArticleId: number;
+
+  @ManyToOne(() => Article, { cascade: true, eager: true })
+  @JoinColumn({ name: "ArticleId" })
+  article: Article;
 }
