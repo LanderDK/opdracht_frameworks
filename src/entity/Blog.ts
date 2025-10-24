@@ -10,7 +10,7 @@ import {
 import { Article } from "./Article";
 
 @Entity()
-export class Blog {
+export class Blog extends Article {
   @PrimaryColumn()
   BlogId: number;
 

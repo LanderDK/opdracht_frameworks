@@ -4,7 +4,7 @@ import { User } from "./entity/User";
 import { config } from "dotenv";
 import { Blog } from "./entity/Blog";
 import { Article } from "./entity/Article";
-import { VideoFile } from "./entity/Videofile";
+import { VideoFile } from "./entity/VideoFile";
 import { Vlog } from "./entity/Vlog";
 import { Comment } from "./entity/Comment";
 import { UserArticle } from "./entity/UserArticle";

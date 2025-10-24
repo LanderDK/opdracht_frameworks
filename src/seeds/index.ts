@@ -18,7 +18,7 @@ async function runSeeds() {
 
     // Seed in the correct order to respect relationships
     await seedUsers(3);
-    await seedArticles(5);
+    //await seedArticles(5);
     await seedVideoFiles(5);
     await seedBlogs();
     await seedVlogs();

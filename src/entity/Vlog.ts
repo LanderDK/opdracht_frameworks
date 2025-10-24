@@ -8,10 +8,10 @@ import {
   PrimaryColumn,
 } from "typeorm";
 import { Article } from "./Article";
-import { VideoFile } from "./Videofile";
+import { VideoFile } from "./VideoFile";
 
 @Entity()
-export class Vlog {
+export class Vlog extends Article {
   @PrimaryColumn()
   VlogId: number;
 

@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
-export class Article {
+export abstract class Article {
   @PrimaryGeneratedColumn()
   ArticleId: number;
 
