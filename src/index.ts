@@ -13,36 +13,32 @@ AppDataSource.initialize()
       "Here you can setup and run express / fastify / any other framework."
     );
   }).then(async () => {
-    console.log("Creating ArticleDao instance...");
-    const articleDao = new (await import("./dao/articleDao")).ArticleDAO(
+    console.log("Creating BlogDao instance...");
+    const blogDao = new (await import("./dao/BlogDao")).BlogDAO(
       AppDataSource
     );
 
-    console.log("Filtering articles by tag 'technology'...");
-    const techArticles = await articleDao.filterByTag("technology");
-    console.log("Articles with tag 'technology': ", techArticles);
-
-    console.log("Creating a new article...");
-    const newArticle = await articleDao.create({    
-      Excerpt: "An article about the latest trends in technology.",
-      ArticleType: "Blog",
-      Content: "Content about the latest in technology...",
-      Slug: "new-tech-trends",
-      Tags: ["technology", "innovation"],
+    blogDao.findAll().then((blogs) => {
+      console.log(`Found ${blogs.length} blogs in the database:`);
+      blogs.forEach((blog) => {
+        console.log(blog);
+      });
     });
-    console.log("Created Article: ", newArticle);
 
-    console.log("Updating the article...");
-    const updatedArticle = await articleDao.update(newArticle.ArticleId, {
-      Excerpt: "An updated article about the latest trends in technology.",
-    });
-    console.log("Updated Article: ", updatedArticle);
 
-    console.log("Deleting the article...");
-    const deleteResult = await articleDao.delete(newArticle.ArticleId);
-    console.log(
-      `Article deletion ${deleteResult ? "succeeded" : "failed"}.`
+  }).then(async () => {
+    console.log("Creating VlogDao instance...");
+    const vlogDao = new (await import("./dao/VlogDao")).VlogDAO(
+      AppDataSource
     );
+
+    vlogDao.findAll().then((vlogs) => {
+      console.log(`Found ${vlogs.length} vlogs in the database:`);
+      vlogs.forEach((vlog) => {
+        console.log(vlog);
+      });
+    });
+
 
   })
   .catch((error) => console.log(error));
