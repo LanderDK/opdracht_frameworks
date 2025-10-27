@@ -6,11 +6,11 @@ export class BlogDAO {
   constructor(protected ds = AppDataSource) {}
 
   async findAll(): Promise<Blog[]> {
-    return this.ds.getRepository(Blog).find({ relations: ["article"] });
+    return this.ds.getRepository(Blog).find();
   }
 
   async findById(id: number): Promise<Blog | null> {
-    return this.ds.getRepository(Blog).findOne({ where: { BlogId: id }, relations: ["article"] });
+    return this.ds.getRepository(Blog).findOne({ where: { BlogId: id }});
   }
 
   /**

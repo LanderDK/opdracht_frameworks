@@ -7,11 +7,11 @@ export class VlogDAO {
   constructor(protected ds = AppDataSource) {}
 
   async findAll(): Promise<Vlog[]> {
-    return this.ds.getRepository(Vlog).find({ relations: ["article", "videofile"] });
+    return this.ds.getRepository(Vlog).find({ relations: ["videofile"] });
   }
 
   async findById(id: number): Promise<Vlog | null> {
-    return this.ds.getRepository(Vlog).findOne({ where: { VlogId: id }, relations: ["article", "videofile"] });
+    return this.ds.getRepository(Vlog).findOne({ where: { VlogId: id }, relations: ["videofile"] });
   }
 
   /**

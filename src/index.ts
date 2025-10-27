@@ -26,19 +26,5 @@ AppDataSource.initialize()
     });
 
 
-  }).then(async () => {
-    console.log("Creating VlogDao instance...");
-    const vlogDao = new (await import("./dao/VlogDao")).VlogDAO(
-      AppDataSource
-    );
-
-    vlogDao.findAll().then((vlogs) => {
-      console.log(`Found ${vlogs.length} vlogs in the database:`);
-      vlogs.forEach((vlog) => {
-        console.log(vlog);
-      });
-    });
-
-
   })
   .catch((error) => console.log(error));
