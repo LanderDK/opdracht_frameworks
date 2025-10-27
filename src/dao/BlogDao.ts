@@ -13,21 +13,10 @@ export class BlogDAO {
     return this.ds.getRepository(Blog).findOne({ where: { BlogId: id }});
   }
 
-  /**
-   * Create a blog: create Article row first, then Blog row that re-uses the ArticleId as BlogId
-   * payload.article can be used to pass article fields (Excerpt, Content, Tags, ...)
-   */
   async create(payload: Partial<Blog> & { article?: Partial<Article> }): Promise<Blog> {
     return this.ds.manager.transaction(async (manager) => {
-      const articleRepo = manager.getRepository(Article);
       const blogRepo = manager.getRepository(Blog);
-
-      const articlePayload = payload.article ?? {};
-      const article = articleRepo.create(articlePayload);
-      article.PublishedAt = article.PublishedAt ?? new Date();
-      const savedArticle = await articleRepo.save(article);
-
-      const blog = blogRepo.create({ ...payload, BlogId: savedArticle.ArticleId });
+      const blog = blogRepo.create({ ...payload, BlogId: payload.ArticleId });
       return blogRepo.save(blog);
     });
   }
@@ -39,9 +28,12 @@ export class BlogDAO {
     repo.merge(blog, patch);
     return repo.save(blog);
   }
-
+  
   async delete(id: number): Promise<boolean> {
-    const res = await this.ds.getRepository(Blog).delete(id);
-    return (res.affected ?? 0) > 0;
+    const repo = this.ds.getRepository(Blog);
+    const blog = await repo.findOneBy({ BlogId: id });
+    if (!blog) return false;    
+    const res = await repo.remove(blog);
+    return res !== undefined;
   }
 }

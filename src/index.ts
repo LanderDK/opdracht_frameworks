@@ -25,6 +25,32 @@ AppDataSource.initialize()
       });
     });
 
+    blogDao.create({
+        ArticleId: 11,
+        ArticleType: "blog",
+        Content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        Excerpt: "Short excerpt of the blog article.",
+        PublishedAt: new Date(),
+        Slug: "test-blog-article",
+        Tags: ["test", "blog"],
+        UpdatedAt: new Date(),
+        BlogId: 11,
+        // Random read time between 2 and 15 minutes
+        readtime: Math.floor(Math.random() * 14) + 2,
+    })
+
+    blogDao.findById(11).then((blog) => {
+      console.log("Found blog with ID 11:", blog);
+    });
+
+    blogDao.update(11, { readtime: 10 }).then((updatedBlog) => {
+      console.log("Updated blog with ID 11:", updatedBlog);
+    });
+
+    blogDao.delete(11).then((deleted) => {
+      console.log("Deleted blog with ID 11:", deleted);
+    });
+
 
   })
   .catch((error) => console.log(error));
