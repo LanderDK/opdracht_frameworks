@@ -1,56 +1,56 @@
-import { DataSource, Repository, FindManyOptions } from "typeorm";
+import { Repository, FindManyOptions } from "typeorm";
+import { AppDataSource } from "../data-source";
 import { Article } from "../entity/Article";
 
-
 export class ArticleDAO {
-  private repo: Repository<Article>;
-  
-  //Initialise the repository to query towards
-  constructor(private dataSource: DataSource) {
-    this.repo = this.dataSource.getRepository(Article);
+  protected repo: Repository<Article>;
+
+  constructor(protected ds = AppDataSource) {
+    this.repo = this.ds.getRepository(Article);
   }
 
-  // GetAll
-  async getAll(): Promise<Article[]> {
-    return this.repo.find();
+  async findAll(options?: FindManyOptions<Article>): Promise<Article[]> {
+    return this.repo.find(options);
   }
 
-  // GetById
-  async getById(id: number): Promise<Article | null> {
+  async findById(id: number): Promise<Article | null> {
     return this.repo.findOneBy({ ArticleId: id });
   }
 
-  //GetBySlug
-  async getBySlug(slug: string): Promise<Article | null> {
+  async findBySlug(slug: string): Promise<Article | null> {
     return this.repo.findOneBy({ Slug: slug });
   }
 
-  //FilterByTag
-  async filterByTag(tag: string): Promise<Article[]> {
-    return this.repo.createQueryBuilder("Article").where("JSON_CONTAINS(article.Tags, :tagJson)", { tagJson: JSON.stringify([tag]) }).getMany();;
+  /**
+   * Find articles that contain the given tag (MySQL JSON column)
+   */
+  async findByTag(tag: string): Promise<Article[]> {
+    return this.repo
+      .createQueryBuilder("article")
+      .where("JSON_CONTAINS(article.Tags, :tagJson)", { tagJson: JSON.stringify([tag]) })
+      .getMany();
   }
 
-  // Create
-  async create(articleData: Partial<Article>): Promise<Article> {
-    const article = this.repo.create(articleData);
-    article.PublishedAt = new Date();
+  async create(payload: Partial<Article>): Promise<Article> {
+    const article = this.repo.create(payload);
+    article.PublishedAt = article.PublishedAt ?? new Date();
     return this.repo.save(article);
   }
 
-  // Update
-  async update(id: number, articleData: Partial<Article>): Promise<Article | null> {
-    const article = await this.repo.findOneBy({ ArticleId: id });
-    if (!article) {
-      return null;
-    }
+  async update(id: number, patch: Partial<Article>): Promise<Article | null> {
+    const article = await this.findById(id);
+    if (!article) return null;
     article.UpdatedAt = new Date();
-    this.repo.merge(article, articleData);
+    this.repo.merge(article, patch);
     return this.repo.save(article);
   }
 
-  // Delete
   async delete(id: number): Promise<boolean> {
-    const result = await this.repo.delete(id);
-    return result.affected !== 0;
+    const res = await this.repo.delete(id);
+    return (res.affected ?? 0) > 0;
+  }
+
+  async count(filter?: Partial<Article>): Promise<number> {
+    return this.repo.count({ where: filter as any });
   }
 }
