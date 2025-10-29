@@ -24,8 +24,12 @@ AppDataSource.initialize()
         console.log(blog);
       });
     });
+  }).then(async () => {
+    const blogDao = new (await import("./dao/BlogDao")).BlogDAO(
+      AppDataSource
+    );
 
-    blogDao.create({
+    await blogDao.create({
         ArticleId: 11,
         ArticleType: "blog",
         Content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -38,15 +42,24 @@ AppDataSource.initialize()
         // Random read time between 2 and 15 minutes
         readtime: Math.floor(Math.random() * 14) + 2,
     })
-
+  }).then(async () => {
+    const blogDao = new (await import("./dao/BlogDao")).BlogDAO(
+      AppDataSource
+    );
     blogDao.findById(11).then((blog) => {
       console.log("Found blog with ID 11:", blog);
     });
-
+  }).then(async () => {
+    const blogDao = new (await import("./dao/BlogDao")).BlogDAO(
+      AppDataSource
+    );
     blogDao.update(11, { readtime: 10 }).then((updatedBlog) => {
       console.log("Updated blog with ID 11:", updatedBlog);
     });
-
+  }).then(async () => {
+    const blogDao = new (await import("./dao/BlogDao")).BlogDAO(
+      AppDataSource
+    );
     blogDao.delete(11).then((deleted) => {
       console.log("Deleted blog with ID 11:", deleted);
     });
