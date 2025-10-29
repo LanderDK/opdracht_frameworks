@@ -15,8 +15,24 @@ export class BlogDAO {
 
   async create(payload: Partial<Blog> & { article?: Partial<Article> }): Promise<Blog> {
     return this.ds.manager.transaction(async (manager) => {
+      const articleRepo = manager.getRepository(Article);
       const blogRepo = manager.getRepository(Blog);
-      const blog = blogRepo.create({ ...payload, BlogId: payload.ArticleId });
+
+      // Step 1: Create and save the Article first
+      const articlePayload = payload.article ?? {};
+      const article = articleRepo.create(articlePayload);
+      article.PublishedAt = article.PublishedAt ?? new Date();
+      const savedArticle = await articleRepo.save(article);
+
+      if (!savedArticle?.ArticleId) {
+        throw new Error("Article creation failed: no ArticleId returned");
+      }
+
+      // Step 2: Create Blog with BlogId = ArticleId and set the relation
+      const blog = blogRepo.create({ ...payload });
+      blog.BlogId = savedArticle.ArticleId;
+      blog.article = savedArticle;
+
       return blogRepo.save(blog);
     });
   }

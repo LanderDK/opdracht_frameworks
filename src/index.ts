@@ -11,8 +11,10 @@ AppDataSource.initialize()
 
     console.log(
       "Here you can setup and run express / fastify / any other framework."
+      
     );
-  }).then(async () => {
+  })
+  .then(async () => {
     console.log("Creating BlogDao instance...");
     const blogDao = new (await import("./dao/BlogDao")).BlogDAO(
       AppDataSource
@@ -24,25 +26,27 @@ AppDataSource.initialize()
         console.log(blog);
       });
     });
-  }).then(async () => {
+  })
+    .then(async () => {
     const blogDao = new (await import("./dao/BlogDao")).BlogDAO(
       AppDataSource
     );
 
     await blogDao.create({
-        ArticleId: 11,
-        ArticleType: "blog",
-        Content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        Excerpt: "Short excerpt of the blog article.",
-        PublishedAt: new Date(),
-        Slug: "test-blog-article",
-        Tags: ["test", "blog"],
-        UpdatedAt: new Date(),
-        BlogId: 11,
+        article: ({
+          ArticleType: "blog",
+          Content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+          Excerpt: "Short excerpt of the blog article.",
+          PublishedAt: new Date(),
+          Slug: "test-blog-article",
+          Tags: ["test", "blog"],
+        } as any),
         // Random read time between 2 and 15 minutes
         readtime: Math.floor(Math.random() * 14) + 2,
-    })
-  }).then(async () => {
+    });
+    console.log("Blog created successfully!");
+  })
+  .then(async () => {
     const blogDao = new (await import("./dao/BlogDao")).BlogDAO(
       AppDataSource
     );
