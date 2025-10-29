@@ -50,7 +50,27 @@ export class VlogDAO {
   }
 
   async delete(id: number): Promise<boolean> {
-    const res = await this.ds.getRepository(Vlog).delete(id);
-    return (res.affected ?? 0) > 0;
+    return this.ds.manager.transaction(async (manager) => {
+      const vlogRepo = manager.getRepository(Vlog);
+      const articleRepo = manager.getRepository(Article);
+
+      // Find the vlog with its article relation
+      const vlog = await vlogRepo.findOne({ 
+        where: { VlogId: id },
+        relations: ["article"]
+      });
+      
+      if (!vlog) return false;
+
+      // Delete vlog first (to avoid FK constraint violation)
+      await vlogRepo.remove(vlog);
+
+      // Then delete the linked article if it exists
+      if (vlog.article) {
+        await articleRepo.remove(vlog.article);
+      }
+
+      return true;
+    });
   }
 }

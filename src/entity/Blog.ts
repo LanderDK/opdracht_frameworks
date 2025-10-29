@@ -12,7 +12,7 @@ export class Blog {
   @PrimaryColumn()
   BlogId: number;
 
-  @OneToOne(() => Article)
+  @OneToOne(() => Article, { onDelete: "CASCADE" })
   @JoinColumn({ name: "BlogId" })
   article: Article;
 

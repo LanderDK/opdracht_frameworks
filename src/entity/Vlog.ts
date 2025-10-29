@@ -13,14 +13,14 @@ export class Vlog {
   @PrimaryColumn()
   VlogId: number;
 
-  @OneToOne(() => Article)
+  @OneToOne(() => Article, { onDelete: "CASCADE" })
   @JoinColumn({ name: "VlogId" })
   article: Article;
 
   @Column({ nullable: true })
   VideoFileId: number;
 
-  @OneToOne(() => VideoFile)
+  @OneToOne(() => VideoFile, { onDelete: "SET NULL" })
   @JoinColumn({ name: "VideoFileId" })
   videofile: VideoFile;
 }

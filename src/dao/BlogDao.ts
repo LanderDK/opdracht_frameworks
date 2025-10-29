@@ -46,10 +46,27 @@ export class BlogDAO {
   }
   
   async delete(id: number): Promise<boolean> {
-    const repo = this.ds.getRepository(Blog);
-    const blog = await repo.findOneBy({ BlogId: id });
-    if (!blog) return false;    
-    const res = await repo.remove(blog);
-    return res !== undefined;
+    return this.ds.manager.transaction(async (manager) => {
+      const blogRepo = manager.getRepository(Blog);
+      const articleRepo = manager.getRepository(Article);
+
+      // Find the blog with its article relation
+      const blog = await blogRepo.findOne({ 
+        where: { BlogId: id },
+        relations: ["article"]
+      });
+      
+      if (!blog) return false;
+
+      // Delete blog first (to avoid FK constraint violation)
+      await blogRepo.remove(blog);
+
+      // Then delete the linked article if it exists
+      if (blog.article) {
+        await articleRepo.remove(blog.article);
+      }
+
+      return true;
+    });
   }
 }
