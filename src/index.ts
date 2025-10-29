@@ -3,7 +3,7 @@ import { AppDataSource } from "./data-source";
 import { User } from "./entity/User";
 import { Article } from "./entity/Article";
 
-// test
+// test 2
 AppDataSource.initialize()
   .then(async () => {
     console.log("Loading users from the database...");
