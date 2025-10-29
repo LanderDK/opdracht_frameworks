@@ -8,6 +8,24 @@ import { seedVlogs } from "./seedVlog";
 import { seedComments } from "./seedComment";
 import { seedUserArticles } from "./seedUserArticle";
 
+async function clearDatabase() {
+  console.log("🗑️  Clearing database...\n");
+
+  try {
+    // Drop and recreate the schema
+    await AppDataSource.dropDatabase();
+    console.log("✓ Database schema dropped");
+    
+    await AppDataSource.synchronize();
+    console.log("✓ Database schema recreated");
+    
+    console.log("\n✓ Database cleared successfully\n");
+  } catch (error) {
+    console.error("Error clearing database:", error);
+    throw error;
+  }
+}
+
 async function runSeeds() {
   try {
     console.log("🌱 Starting database seeding...\n");
@@ -15,6 +33,9 @@ async function runSeeds() {
     // Initialize database connection
     await AppDataSource.initialize();
     console.log("✓ Database connection established\n");
+
+    // Clear existing data
+    await clearDatabase();
 
     // Seed in the correct order to respect relationships
     await seedUsers(3);
