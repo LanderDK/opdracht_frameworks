@@ -83,15 +83,8 @@ export async function seedBlogs(ensureCount: number = 5): Promise<Blog[]> {
 
   for (const article of blogArticles) {
     const blog = new Blog();
-    blog.ArticleId = article.ArticleId;
-    blog.ArticleType = article.ArticleType;
-    blog.Content = article.Content;
-    blog.Excerpt = article.Excerpt;
-    blog.PublishedAt = article.PublishedAt;
-    blog.Slug = article.Slug;
-    blog.Tags = article.Tags;
-    blog.UpdatedAt = article.UpdatedAt;
     blog.BlogId = article.ArticleId;
+    blog.article = article;
     // Random read time between 2 and 15 minutes
     blog.readtime = Math.floor(Math.random() * 14) + 2;
     blogs.push(blog);

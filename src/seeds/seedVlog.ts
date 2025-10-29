@@ -94,16 +94,10 @@ export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
   const pairs = Math.min(vlogArticles.length, videoFiles.length);
   for (let i = 0; i < pairs; i++) {
     const vlog = new Vlog();
-    vlog.ArticleId = vlogArticles[i].ArticleId;
-    vlog.ArticleType = vlogArticles[i].ArticleType;
-    vlog.Content = vlogArticles[i].Content;
-    vlog.Excerpt = vlogArticles[i].Excerpt;
-    vlog.PublishedAt = vlogArticles[i].PublishedAt;
-    vlog.Slug = vlogArticles[i].Slug;
-    vlog.Tags = vlogArticles[i].Tags;
-    vlog.UpdatedAt = vlogArticles[i].UpdatedAt;
     vlog.VlogId = vlogArticles[i].ArticleId;
+    vlog.article = vlogArticles[i];
     vlog.VideoFileId = videoFiles[i].VideoFileId;
+    vlog.videofile = videoFiles[i];
     vlogs.push(vlog);
   }
 

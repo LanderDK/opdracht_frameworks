@@ -1,28 +1,26 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
+  PrimaryColumn,
   Column,
-  ForeignKey,
   OneToOne,
   JoinColumn,
-  PrimaryColumn,
 } from "typeorm";
 import { Article } from "./Article";
 import { VideoFile } from "./VideoFile";
 
 @Entity()
-export class Vlog extends Article {
+export class Vlog {
   @PrimaryColumn()
   VlogId: number;
 
-  @OneToOne(() => Article, { cascade: true })
+  @OneToOne(() => Article)
   @JoinColumn({ name: "VlogId" })
   article: Article;
 
-  @Column()
+  @Column({ nullable: true })
   VideoFileId: number;
 
-  @OneToOne(() => VideoFile, { cascade: true, lazy: true })
+  @OneToOne(() => VideoFile)
   @JoinColumn({ name: "VideoFileId" })
   videofile: VideoFile;
 }
