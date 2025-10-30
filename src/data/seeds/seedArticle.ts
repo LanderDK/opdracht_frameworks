@@ -46,7 +46,7 @@ export async function seedArticles(count: number = 20): Promise<Article[]> {
     // Create a plain object instead of instantiating abstract Article
     const articleData: Partial<Article> = {
       Excerpt: faker.lorem.sentence(),
-      ArticleType: articleTypes[Math.floor(Math.random() * articleTypes.length)],
+      Title: faker.lorem.words(3),
       Slug: faker.helpers.slugify(faker.lorem.words(3)).toLowerCase(),
       Content: faker.lorem.paragraphs(3),
       Tags: tags,

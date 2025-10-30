@@ -9,9 +9,9 @@ export class Vlog {
 
   @OneToOne(() => Article, { cascade: true, eager: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: "ArticleId" })
-  Article!: Article;
+  Article: Article;
 
   @OneToOne(() => VideoFile, { cascade: true, eager: true })
   @JoinColumn({ name: "VideoFileId" })
-  VideoFile!: VideoFile;
+  VideoFile: VideoFile;
 }
