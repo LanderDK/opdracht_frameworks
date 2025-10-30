@@ -1,13 +1,17 @@
-import { ChildEntity, Column, OneToOne, JoinColumn } from "typeorm";
+import { Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
 import { Article } from "./Article";
 import { VideoFile } from "./VideoFile";
 
-@ChildEntity("vlog")
-export class Vlog extends Article {
-  @Column({ nullable: true })
-  VideoFileId: number;
+@Entity()
+export class Vlog {
+  @PrimaryColumn()
+  ArticleId: number;
 
-  @OneToOne(() => VideoFile, { onDelete: "SET NULL" })
+  @OneToOne(() => Article, { cascade: true, eager: true, onDelete: 'CASCADE' })
+  @JoinColumn({ name: "ArticleId" })
+  Article!: Article;
+
+  @OneToOne(() => VideoFile, { cascade: true, eager: true })
   @JoinColumn({ name: "VideoFileId" })
-  VideoFile: VideoFile;
+  VideoFile!: VideoFile;
 }

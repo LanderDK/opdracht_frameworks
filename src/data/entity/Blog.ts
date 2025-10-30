@@ -1,8 +1,15 @@
-import { ChildEntity, Column } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
 import { Article } from "./Article";
 
-@ChildEntity("blog")
-export class Blog extends Article {
+@Entity()
+export class Blog {
+  @PrimaryColumn()
+  ArticleId: number;
+
+  @OneToOne(() => Article, { cascade: true, eager: true, onDelete: 'CASCADE' })
+  @JoinColumn({ name: "ArticleId" })
+  Article!: Article;
+  
   @Column()
-  Readtime: number; // in minutes
+  Readtime: number;
 }

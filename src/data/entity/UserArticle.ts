@@ -13,14 +13,14 @@ export class UserArticle {
   @PrimaryColumn()
   ArticleId: number;
 
-  @ManyToOne(() => Article, { cascade: true })
+  @ManyToOne(() => Article, { cascade: false })
   @JoinColumn({ name: "ArticleId" })
-  article: Article;
+  Article: Article;
 
   @PrimaryColumn()
   UserId: number;
 
-  @ManyToOne(() => User, { cascade: true })
+  @ManyToOne(() => User, { cascade: false })
   @JoinColumn({ name: "UserId" })
-  user: User;
+  User: User;
 }

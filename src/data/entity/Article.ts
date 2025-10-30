@@ -1,22 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column, TableInheritance } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-@TableInheritance({ column: { type: "varchar", name: "ArticleType" } })
-export abstract class Article {
+export class Article {
   @PrimaryGeneratedColumn()
   ArticleId: number;
 
-  @Column({nullable: true})
+  @Column({ length: 256 })
   Title: string;
 
-  @Column()
+  @Column({ length: 1024 } )
   Excerpt: string;
-
-  @Column({ length: 2048 })
-  Slug: string;
 
   @Column({ length: 8192 })
   Content: string;
+
+  @Column({ length: 128 })
+  Slug: string;
 
   @Column("json")
   Tags: string[];
@@ -24,6 +23,6 @@ export abstract class Article {
   @Column()
   PublishedAt: Date;
 
-  @Column({ nullable: true })
+  @Column()
   UpdatedAt: Date;
 }
