@@ -1,13 +1,22 @@
 import { AppDataSource } from "../data/data-source";
 import { Blog } from "../data/entity/Blog";
 import { Article } from "../data/entity/Article";
+import { FindManyOptions, Repository } from "typeorm";
 
 export class BlogDAO {
-  constructor(protected ds = AppDataSource) {}
 
-  async findAll(): Promise<Blog[]> {
+    protected repo: Repository<Blog>;
+  
+
+  constructor(protected ds = AppDataSource) {
+    this.repo = this.ds.getRepository(Blog);
+  }
+
+  async findAll(options?: FindManyOptions<Article>): Promise<Blog[]> {
     return this.ds.getRepository(Blog).find();
   }
+
+
 
   async findById(id: number): Promise<Blog | null> {
     return this.ds.getRepository(Blog).findOne({ where: { ArticleId: id }});
@@ -15,27 +24,73 @@ export class BlogDAO {
 
   async create(payload: Partial<Blog>): Promise<Blog> {
     const repo = this.ds.getRepository(Blog);
-    const blog = repo.create(payload);
-    blog.PublishedAt = blog.PublishedAt ?? new Date();
-    // TypeORM will automatically create both Article and Blog rows
+    const repo_art = this.ds.getRepository(Article);
+    console.log(payload);
+    if (!payload.Article) {
+      throw new Error("Article data is required to create a Blog");
+    }
+    const article = repo_art.create({
+    ...payload.Article,
+    ArticleType: "blog",
+    PublishedAt: payload.Article.PublishedAt ?? new Date(),
+    UpdatedAt: payload.Article.UpdatedAt ?? new Date(),
+    });
+    const savedArticle = await repo_art.save(article);
+
+    const blog = repo.create({
+      ArticleId: savedArticle.ArticleId,
+      Article: savedArticle,
+      Readtime: payload.Readtime,
+    });
     return repo.save(blog);
   }
 
   async update(id: number, patch: Partial<Blog>): Promise<Blog | null> {
     const repo = this.ds.getRepository(Blog);
-    const blog = await repo.findOneBy({ ArticleId: id });
-    if (!blog) return null;
-    blog.UpdatedAt = new Date();
-    repo.merge(blog, patch);
-    return repo.save(blog);
+    const repo_art = this.ds.getRepository(Article);
+    
+    // Load blog WITH Article data
+    const blog = await repo.findOne({ 
+        where: { ArticleId: id },
+        relations: ['Article']
+      });
+
+      if (!blog) return null;
+      console.log(patch);
+      console.log(patch.Article);
+      // Update Article if provided
+    if (patch.Article) {
+        
+        Object.assign(blog.Article, patch.Article);
+        blog.Article.UpdatedAt = new Date();
+        await repo_art.save(blog.Article);
+      }
+
+      // Update Blog fields (not Article)
+      if (patch.Readtime !== undefined) {
+        blog.Readtime = patch.Readtime;
+      }
+
+      return repo.save(blog);
   }
 
   async delete(id: number): Promise<boolean> {
     const repo = this.ds.getRepository(Blog);
-    const blog = await repo.findOneBy({ ArticleId: id });
+    const repo_art = this.ds.getRepository(Article);
+    
+    // Load blog to get ArticleId
+    const blog = await repo.findOne({ 
+      where: { ArticleId: id }
+    });
+    
     if (!blog) return false;
-    // TypeORM will handle cascade delete for child table rows
+    
+    // Delete Blog first (geen cascade van blog naar article)
     await repo.remove(blog);
+    
+    // Then delete Article (dit triggert cascade naar andere entities)
+    await repo_art.delete(id);
+    
     return true;
   }
 }
