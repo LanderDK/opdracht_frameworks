@@ -7,11 +7,11 @@ export class VlogDAO {
   constructor(protected ds = AppDataSource) {}
 
   async findAll(): Promise<Vlog[]> {
-    return this.ds.getRepository(Vlog).find({ relations: ["videofile"] });
+    return this.ds.getRepository(Vlog).find({ relations: ["VideoFile"] });
   }
 
   async findById(id: number): Promise<Vlog | null> {
-    return this.ds.getRepository(Vlog).findOne({ where: { VlogId: id }, relations: ["videofile"] });
+    return this.ds.getRepository(Vlog).findOne({ where: { ArticleId: id }, relations: ["VideoFile"] });
   }
 
   /**
@@ -19,16 +19,10 @@ export class VlogDAO {
    * payload.article - fields for the Article row
    * payload.videoFile - optional VideoFile data; if provided a VideoFile row will be created and referenced
    */
-  async create(payload: Partial<Vlog> & { article?: Partial<Article>; videoFile?: Partial<VideoFile> }): Promise<Vlog> {
+  async create(payload: Partial<Vlog> & { videoFile?: Partial<VideoFile> }): Promise<Vlog> {
     return this.ds.manager.transaction(async (manager) => {
-      const articleRepo = manager.getRepository(Article);
       const vlogRepo = manager.getRepository(Vlog);
       const videoRepo = manager.getRepository(VideoFile);
-
-      const articlePayload = payload.article ?? {};
-      const article = articleRepo.create(articlePayload);
-      article.PublishedAt = article.PublishedAt ?? new Date();
-      const savedArticle = await articleRepo.save(article);
 
       let savedVideo: VideoFile | undefined;
       if (payload.videoFile) {
@@ -36,41 +30,28 @@ export class VlogDAO {
         savedVideo = await videoRepo.save(vf);
       }
 
-      const vlog = vlogRepo.create({ ...payload, VlogId: savedArticle.ArticleId, VideoFileId: savedVideo?.VideoFileId });
+      const vlog = vlogRepo.create({ ...payload, VideoFileId: savedVideo?.VideoFileId });
+      vlog.PublishedAt = vlog.PublishedAt ?? new Date();
+      // TypeORM will automatically create both Article and Vlog rows
       return vlogRepo.save(vlog);
     });
   }
 
   async update(id: number, patch: Partial<Vlog>): Promise<Vlog | null> {
     const repo = this.ds.getRepository(Vlog);
-    const vlog = await repo.findOneBy({ VlogId: id });
+    const vlog = await repo.findOneBy({ ArticleId: id });
     if (!vlog) return null;
+    vlog.UpdatedAt = new Date();
     repo.merge(vlog, patch);
     return repo.save(vlog);
   }
 
   async delete(id: number): Promise<boolean> {
-    return this.ds.manager.transaction(async (manager) => {
-      const vlogRepo = manager.getRepository(Vlog);
-      const articleRepo = manager.getRepository(Article);
-
-      // Find the vlog with its article relation
-      const vlog = await vlogRepo.findOne({ 
-        where: { VlogId: id },
-        relations: ["article"]
-      });
-      
-      if (!vlog) return false;
-
-      // Delete vlog first (to avoid FK constraint violation)
-      await vlogRepo.remove(vlog);
-
-      // Then delete the linked article if it exists
-      if (vlog.article) {
-        await articleRepo.remove(vlog.article);
-      }
-
-      return true;
-    });
+    const repo = this.ds.getRepository(Vlog);
+    const vlog = await repo.findOneBy({ ArticleId: id });
+    if (!vlog) return false;
+    // TypeORM will handle cascade delete for child table rows
+    await repo.remove(vlog);
+    return true;
   }
 }

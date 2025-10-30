@@ -19,40 +19,37 @@ async function main() {
     const articleDao = new ArticleDAO();
     const blogDao = new BlogDAO();
 
-    // TEST 1: Create a Blog (with nested Article)
+    // TEST 1: Create a Blog (TypeORM will create Article + Blog rows)
     console.log("=".repeat(60));
-    console.log("[2/7] TEST: Create Blog with Article");
+    console.log("[2/7] TEST: Create Blog with TypeORM Inheritance");
     console.log("=".repeat(60));
     const blog = await blogDao.create({
-      article: {
-        Excerpt: "Test blog excerpt - debugging DAO operations",
-        ArticleType: "blog",
-        Content: "This is a test blog created by the debug harness to verify DAO operations work correctly.",
-        Slug: `debug-blog-${Date.now()}`,
-        Tags: ["debug", "test", "dao"],
-      } as any,
-      readtime: 5,
+      Excerpt: "Test blog excerpt - debugging DAO operations with inheritance",
+      Content: "This is a test blog created by the debug harness to verify TypeORM inheritance works correctly.",
+      Slug: `debug-blog-${Date.now()}`,
+      Tags: ["debug", "test", "dao", "inheritance"],
+      Readtime: 5,
     });
     console.log("✓ Blog created:");
-    console.log(`  BlogId: ${blog.BlogId}`);
-    console.log(`  Readtime: ${blog.readtime} min`);
-    console.log(`  Article Slug: ${blog.article?.Slug || 'N/A'}`);
+    console.log(`  ArticleId: ${blog.ArticleId}`);
+    console.log(`  Readtime: ${blog.Readtime} min`);
+    console.log(`  Slug: ${blog.Slug}`);
 
     // TEST 2: Read - Find by ID
     console.log("\n" + "=".repeat(60));
     console.log("[3/7] TEST: Find Blog by ID");
     console.log("=".repeat(60));
-    const foundBlog = await blogDao.findById(blog.BlogId);
+    const foundBlog = await blogDao.findById(blog.ArticleId);
     console.log(foundBlog ? "✓ Blog found:" : "✗ Blog NOT found");
     if (foundBlog) {
-      console.log(`  BlogId: ${foundBlog.BlogId}, Readtime: ${foundBlog.readtime} min`);
+      console.log(`  ArticleId: ${foundBlog.ArticleId}, Readtime: ${foundBlog.Readtime} min`);
     }
 
-    // TEST 3: Verify Article exists
+    // TEST 3: Verify Article row exists in article table
     console.log("\n" + "=".repeat(60));
-    console.log("[4/7] TEST: Verify Article exists for Blog");
+    console.log("[4/7] TEST: Verify Article base row exists");
     console.log("=".repeat(60));
-    const articleBeforeDelete = await articleDao.findById(blog.BlogId);
+    const articleBeforeDelete = await articleDao.findById(blog.ArticleId);
     console.log(articleBeforeDelete ? "✓ Article exists:" : "✗ Article NOT found");
     if (articleBeforeDelete) {
       console.log(`  ArticleId: ${articleBeforeDelete.ArticleId}`);
@@ -62,26 +59,26 @@ async function main() {
 
     // TEST 4: Update Blog
     console.log("\n" + "=".repeat(60));
-    console.log("[5/7] TEST: Update Blog readtime");
+    console.log("[5/7] TEST: Update Blog Readtime");
     console.log("=".repeat(60));
-    const updatedBlog = await blogDao.update(blog.BlogId, { readtime: 10 });
+    const updatedBlog = await blogDao.update(blog.ArticleId, { Readtime: 10 });
     console.log(updatedBlog ? "✓ Blog updated:" : "✗ Update failed");
     if (updatedBlog) {
-      console.log(`  New readtime: ${updatedBlog.readtime} min`);
+      console.log(`  New Readtime: ${updatedBlog.Readtime} min`);
     }
 
-    // TEST 5: Delete Blog (should CASCADE delete Article)
+    // TEST 5: Delete Blog (should CASCADE delete Article via TypeORM inheritance)
     console.log("\n" + "=".repeat(60));
     console.log("[6/7] TEST: Delete Blog (should cascade to Article)");
     console.log("=".repeat(60));
-    const deleted = await blogDao.delete(blog.BlogId);
+    const deleted = await blogDao.delete(blog.ArticleId);
     console.log(deleted ? "✓ Blog deleted" : "✗ Delete failed");
 
     // TEST 6: Verify Article is also deleted (cascade)
     console.log("\n" + "=".repeat(60));
     console.log("[7/7] TEST: Verify Article was CASCADE deleted");
     console.log("=".repeat(60));
-    const articleAfterDelete = await articleDao.findById(blog.BlogId);
+    const articleAfterDelete = await articleDao.findById(blog.ArticleId);
     if (!articleAfterDelete) {
       console.log("✓ Article successfully deleted (cascade worked!)");
     } else {

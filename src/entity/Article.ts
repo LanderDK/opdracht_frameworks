@@ -1,15 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, TableInheritance } from "typeorm";
 
 @Entity()
+@TableInheritance({ column: { type: "varchar", name: "ArticleType" } })
 export abstract class Article {
   @PrimaryGeneratedColumn()
   ArticleId: number;
 
   @Column()
   Excerpt: string;
-
-  @Column()
-  ArticleType: string;
 
   @Column({ length: 2048 })
   Slug: string;
