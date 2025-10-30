@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { AppDataSource } from "../data-source";
 import { seedUsers } from "./seedUser";
-import { seedArticles } from "./seedArticle";
 import { seedBlogs } from "./seedBlog";
 import { seedVideoFiles } from "./seedVideoFile";
 import { seedVlogs } from "./seedVlog";
@@ -15,10 +14,10 @@ async function clearDatabase() {
     // Drop and recreate the schema
     await AppDataSource.dropDatabase();
     console.log("✓ Database schema dropped");
-    
+
     await AppDataSource.synchronize();
     console.log("✓ Database schema recreated");
-    
+
     console.log("\n✓ Database cleared successfully\n");
   } catch (error) {
     console.error("Error clearing database:", error);
@@ -39,7 +38,6 @@ export async function runSeeds() {
 
     // Seed in the correct order to respect relationships
     await seedUsers(3);
-    //await seedArticles(5);
     await seedVideoFiles(5);
     await seedBlogs();
     await seedVlogs();
