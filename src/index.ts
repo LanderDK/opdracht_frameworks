@@ -1,6 +1,8 @@
 import { AppDataSource } from "./data-source";
 import { ArticleDAO } from "./dao/ArticleDao";
 import { BlogDAO } from "./dao/BlogDao";
+import createServer from "./createServer";
+import process from "process";
 
 /**
  * Debug/Test harness for Blog DAO
@@ -27,7 +29,8 @@ async function main() {
       article: {
         Excerpt: "Test blog excerpt - debugging DAO operations",
         ArticleType: "blog",
-        Content: "This is a test blog created by the debug harness to verify DAO operations work correctly.",
+        Content:
+          "This is a test blog created by the debug harness to verify DAO operations work correctly.",
         Slug: `debug-blog-${Date.now()}`,
         Tags: ["debug", "test", "dao"],
       } as any,
@@ -36,7 +39,7 @@ async function main() {
     console.log("✓ Blog created:");
     console.log(`  BlogId: ${blog.BlogId}`);
     console.log(`  Readtime: ${blog.readtime} min`);
-    console.log(`  Article Slug: ${blog.article?.Slug || 'N/A'}`);
+    console.log(`  Article Slug: ${blog.article?.Slug || "N/A"}`);
 
     // TEST 2: Read - Find by ID
     console.log("\n" + "=".repeat(60));
@@ -45,7 +48,9 @@ async function main() {
     const foundBlog = await blogDao.findById(blog.BlogId);
     console.log(foundBlog ? "✓ Blog found:" : "✗ Blog NOT found");
     if (foundBlog) {
-      console.log(`  BlogId: ${foundBlog.BlogId}, Readtime: ${foundBlog.readtime} min`);
+      console.log(
+        `  BlogId: ${foundBlog.BlogId}, Readtime: ${foundBlog.readtime} min`
+      );
     }
 
     // TEST 3: Verify Article exists
@@ -53,7 +58,9 @@ async function main() {
     console.log("[4/7] TEST: Verify Article exists for Blog");
     console.log("=".repeat(60));
     const articleBeforeDelete = await articleDao.findById(blog.BlogId);
-    console.log(articleBeforeDelete ? "✓ Article exists:" : "✗ Article NOT found");
+    console.log(
+      articleBeforeDelete ? "✓ Article exists:" : "✗ Article NOT found"
+    );
     if (articleBeforeDelete) {
       console.log(`  ArticleId: ${articleBeforeDelete.ArticleId}`);
       console.log(`  Excerpt: ${articleBeforeDelete.Excerpt}`);
@@ -100,9 +107,20 @@ async function main() {
 
     console.log("\n✓ Debug harness completed successfully!");
 
+    // Express server
+    const server = await createServer();
+    await server.start();
+
+    async function onClose() {
+      await server.stop();
+      process.exit(0);
+    }
+
+    process.on("SIGTERM", onClose);
+    process.on("SIGQUIT", onClose);
   } catch (err) {
     console.error("\n❌ Error during debug/test:", err);
-    process.exitCode = 1;
+    process.exit(-1);
   } finally {
     try {
       await AppDataSource.destroy();
