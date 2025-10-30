@@ -7,6 +7,20 @@ import { VideoFile } from "../data/entity/VideoFile";
 
 const vlogDao = new VlogDAO();
 
+//GET ALL VLOGS
+const getAllVlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const vlogs = await vlogDao.findAll();
+    res.json(vlogs);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // GET vlog by ID
 const getVlogById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,14 +45,15 @@ getVlogById.validationScheme = {
 // POST create new vlog
 const createVlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log(req.body);
     const payload = {
-      article: {
-        Title: req.body.title,
-        Excerpt: req.body.excerpt,
+      Article: {
+        Title: req.body.Article.Title,
+        Excerpt: req.body.Article.Excerpt,
         ArticleType: "vlog",
-        Content: req.body.content,
-        Slug: req.body.slug,
-        Tags: req.body.tags,
+        Content: req.body.Article.Content,
+        Slug: req.body.Article.Slug,
+        Tags: req.body.Article.Tags,
       } as any,
       VideoFile: req.body.VideoFile,
     };
@@ -50,12 +65,17 @@ const createVlog = async (req: Request, res: Response, next: NextFunction) => {
 };
 createVlog.validationScheme = {
   body: {
-    title: Joi.string().min(1).max(200).required(), // min 5
-    excerpt: Joi.string().min(1).max(500).required(), // min 20
-    content: Joi.string().min(1).required(), // min 50
-    slug: Joi.string().max(255).required(),
-    tags: Joi.array().items(Joi.string().max(50)).optional(),
-    VideoFile: Joi.string().uri().required(),
+    Article:
+      Joi.object({
+        Title: Joi.string().min(1).max(200).required(), // min 5
+        Excerpt: Joi.string().min(1).max(500).required(), // min 20
+        Content: Joi.string().min(1).required(), // min 50
+        Slug: Joi.string().max(255).optional(),
+        Tags: Joi.array().items(Joi.string().max(50)).optional(),
+      }).required(),
+    VideoFile: Joi.object({
+      VideoFileUrl: Joi.string().uri().required(),
+    }).required(),
   },
 };
 
@@ -65,14 +85,15 @@ const updateVlog = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id, 10);
 
     const payload = {
-      article: {
-        Title: req.body.title,
-        Excerpt: req.body.excerpt,
-        Content: req.body.content,
-        Slug: req.body.slug,
-        Tags: req.body.tags,
+      Article: {
+        Title: req.body.Article.Title,
+        Excerpt: req.body.Article.Excerpt,
+        ArticleType: "vlog",
+        Content: req.body.Article.Content,
+        Slug: req.body.Article.Slug,
+        Tags: req.body.Article.Tags,
       } as any,
-      VideoFile: req.body.video_file,
+      VideoFile: req.body.VideoFile,
     };
 
     const vlog = await vlogDao.update(id, payload);
@@ -91,12 +112,17 @@ updateVlog.validationScheme = {
     id: Joi.number().integer().positive().required(),
   },
   body: {
-    title: Joi.string().min(1).max(200).required(), // min 5
-    excerpt: Joi.string().min(1).max(500).required(), // min 20
-    content: Joi.string().min(1).required(), // min 50
-    slug: Joi.string().max(255).optional(),
-    tags: Joi.array().items(Joi.string().max(50)).optional(),
-    VideoFile: Joi.string().uri().optional(),
+    Article:
+      Joi.object({
+        Title: Joi.string().min(1).max(200).required(), // min 5
+        Excerpt: Joi.string().min(1).max(500).required(), // min 20
+        Content: Joi.string().min(1).required(), // min 50
+        Slug: Joi.string().max(255).optional(),
+        Tags: Joi.array().items(Joi.string().max(50)).optional(),
+      }).required(),
+    VideoFile: Joi.object({
+      VideoFileUrl: Joi.string().uri().required(),
+    }).required(),
   },
 };
 
@@ -123,6 +149,7 @@ deleteVlog.validationScheme = {
 
 export default function installVlogRouter(router: Router): void {
   // GET routes
+  router.get("/vlogs/", getAllVlogs);
   router.get("/vlogs/:id", validate(getVlogById.validationScheme), getVlogById);
 
   // POST routes
