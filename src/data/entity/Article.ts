@@ -25,4 +25,7 @@ export class Article {
 
   @Column()
   UpdatedAt: Date;
+
+  @Column()
+  ArticleType: string;
 }
