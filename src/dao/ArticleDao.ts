@@ -1,6 +1,6 @@
 import { Repository, FindManyOptions } from "typeorm";
-import { AppDataSource } from "../data-source";
-import { Article } from "../entity/Article";
+import { AppDataSource } from "../data/data-source";
+import { Article } from "../data/entity/Article";
 
 export class ArticleDAO {
   protected repo: Repository<Article>;

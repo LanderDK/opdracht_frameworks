@@ -6,15 +6,6 @@ const { combine, timestamp, colorize, printf } = format;
 // Logger instance
 let logger: winston.Logger | undefined;
 
-// Type definitions
-interface LogInfo {
-  level: string;
-  message: string;
-  timestamp?: string;
-  error?: Error;
-  [key: string]: any;
-}
-
 interface LoggerOptions {
   level: string;
   disabled?: boolean;
@@ -82,5 +73,5 @@ export const initializeLogger = ({
     ],
   });
 
-  logger.info(`🚀 Logger initialized with minimum log level ${level}`);
+  logger.info(`Logger initialized with minimum log level ${level}`);
 };

@@ -1,4 +1,4 @@
-import { AppDataSource } from "../data-source";
+import { AppDataSource } from "./data-source";
 import { getLogger } from "../core/logging";
 
 // Initialize TypeORM DataSource
@@ -7,7 +7,7 @@ async function initializeData() {
   try {
     if (!AppDataSource.isInitialized) {
       await AppDataSource.initialize();
-      logger.info("✓ Database connection initialized");
+      logger.info("Database connection initialized");
     }
   } catch (error) {
     logger.error("Failed to initialize database", { error });
@@ -21,7 +21,7 @@ async function shutdownData() {
   try {
     if (AppDataSource.isInitialized) {
       await AppDataSource.destroy();
-      logger.info("✓ Database connection closed");
+      logger.info("Database connection closed");
     }
   } catch (error) {
     logger.error("Error closing database connection", { error });

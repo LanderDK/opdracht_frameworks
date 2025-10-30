@@ -26,7 +26,7 @@ async function clearDatabase() {
   }
 }
 
-async function runSeeds() {
+export async function runSeeds() {
   try {
     console.log("🌱 Starting database seeding...\n");
 

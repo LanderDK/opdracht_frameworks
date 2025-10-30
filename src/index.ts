@@ -1,7 +1,6 @@
-import { AppDataSource } from "./data-source";
+import { AppDataSource } from "./data/data-source";
 import { ArticleDAO } from "./dao/ArticleDao";
 import { BlogDAO } from "./dao/BlogDao";
-import createServer from "./createServer";
 import process from "process";
 
 /**
@@ -106,18 +105,6 @@ async function main() {
     console.log(`Total Articles: ${allArticles.length}`);
 
     console.log("\n✓ Debug harness completed successfully!");
-
-    // Express server
-    const server = await createServer();
-    await server.start();
-
-    async function onClose() {
-      await server.stop();
-      process.exit(0);
-    }
-
-    process.on("SIGTERM", onClose);
-    process.on("SIGQUIT", onClose);
   } catch (err) {
     console.error("\n❌ Error during debug/test:", err);
     process.exit(-1);

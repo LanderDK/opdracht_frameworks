@@ -1,6 +1,6 @@
-import { AppDataSource } from "../data-source";
-import { Blog } from "../entity/Blog";
-import { Article } from "../entity/Article";
+import { AppDataSource } from "../data/data-source";
+import { Blog } from "../data/entity/Blog";
+import { Article } from "../data/entity/Article";
 
 export class BlogDAO {
   constructor(protected ds = AppDataSource) {}

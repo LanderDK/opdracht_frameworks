@@ -1,7 +1,7 @@
-import { AppDataSource } from "../data-source";
-import { Vlog } from "../entity/Vlog";
-import { Article } from "../entity/Article";
-import { VideoFile } from "../entity/VideoFile";
+import { AppDataSource } from "../data/data-source";
+import { Vlog } from "../data/entity/Vlog";
+import { Article } from "../data/entity/Article";
+import { VideoFile } from "../data/entity/VideoFile";
 
 export class VlogDAO {
   constructor(protected ds = AppDataSource) {}
