@@ -11,7 +11,9 @@ export class VlogDAO {
   }
 
   async findById(id: number): Promise<Vlog | null> {
-    return this.ds.getRepository(Vlog).findOne({ where: { VlogId: id }, relations: ["videofile"] });
+    return this.ds
+      .getRepository(Vlog)
+      .findOne({ where: { VlogId: id }, relations: ["videofile"] });
   }
 
   /**
@@ -19,7 +21,11 @@ export class VlogDAO {
    * payload.article - fields for the Article row
    * payload.videoFile - optional VideoFile data; if provided a VideoFile row will be created and referenced
    */
-  async create(payload: Partial<Vlog> & { article?: Partial<Article>; videoFile?: Partial<VideoFile> }): Promise<Vlog> {
+  async create(
+    payload: Partial<Vlog> & {
+      article?: Partial<Article>;
+    }
+  ): Promise<Vlog> {
     return this.ds.manager.transaction(async (manager) => {
       const articleRepo = manager.getRepository(Article);
       const vlogRepo = manager.getRepository(Vlog);
@@ -31,22 +37,60 @@ export class VlogDAO {
       const savedArticle = await articleRepo.save(article);
 
       let savedVideo: VideoFile | undefined;
-      if (payload.videoFile) {
-        const vf = videoRepo.create(payload.videoFile);
+      if (payload.videofile) {
+        const vf = videoRepo.create(payload.videofile);
         savedVideo = await videoRepo.save(vf);
       }
 
-      const vlog = vlogRepo.create({ ...payload, VlogId: savedArticle.ArticleId, VideoFileId: savedVideo?.VideoFileId });
+      const vlog = vlogRepo.create({
+        ...payload,
+        VlogId: savedArticle.ArticleId,
+        VideoFileId: savedVideo?.VideoFileId,
+      });
       return vlogRepo.save(vlog);
     });
   }
 
-  async update(id: number, patch: Partial<Vlog>): Promise<Vlog | null> {
-    const repo = this.ds.getRepository(Vlog);
-    const vlog = await repo.findOneBy({ VlogId: id });
-    if (!vlog) return null;
-    repo.merge(vlog, patch);
-    return repo.save(vlog);
+  async update(
+    id: number,
+    patch: Partial<Vlog> & {
+      article?: Partial<Article>;
+      videofile?: Partial<VideoFile>;
+    }
+  ): Promise<Vlog | null> {
+    return this.ds.manager.transaction(async (manager) => {
+      const vlogRepo = manager.getRepository(Vlog);
+      const articleRepo = manager.getRepository(Article);
+      const videoRepo = manager.getRepository(VideoFile);
+
+      // Find the vlog with its article and videofile relations
+      const vlog = await vlogRepo.findOne({
+        where: { VlogId: id },
+        relations: ["article", "videofile"],
+      });
+
+      if (!vlog) return null;
+
+      // Update the article if article data is provided
+      if (patch.article && vlog.article) {
+        patch.article.UpdatedAt = new Date();
+        articleRepo.merge(vlog.article, patch.article);
+        await articleRepo.save(vlog.article);
+      }
+
+      // Update the videofile if videofile data is provided
+      if (patch.videofile && vlog.videofile) {
+        videoRepo.merge(vlog.videofile, patch.videofile);
+        await videoRepo.save(vlog.videofile);
+      }
+
+      // Remove article and videofile from patch before merging into vlog
+      const { article, videofile, ...vlogPatch } = patch;
+
+      // Update the vlog properties
+      vlogRepo.merge(vlog, vlogPatch);
+      return vlogRepo.save(vlog);
+    });
   }
 
   async delete(id: number): Promise<boolean> {
@@ -55,11 +99,11 @@ export class VlogDAO {
       const articleRepo = manager.getRepository(Article);
 
       // Find the vlog with its article relation
-      const vlog = await vlogRepo.findOne({ 
+      const vlog = await vlogRepo.findOne({
         where: { VlogId: id },
-        relations: ["article"]
+        relations: ["article"],
       });
-      
+
       if (!vlog) return false;
 
       // Delete vlog first (to avoid FK constraint violation)

@@ -6,6 +6,9 @@ export abstract class Article {
   ArticleId: number;
 
   @Column()
+  Title: string;
+
+  @Column()
   Excerpt: string;
 
   @Column()

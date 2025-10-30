@@ -10,10 +10,12 @@ export class BlogDAO {
   }
 
   async findById(id: number): Promise<Blog | null> {
-    return this.ds.getRepository(Blog).findOne({ where: { BlogId: id }});
+    return this.ds.getRepository(Blog).findOne({ where: { BlogId: id } });
   }
 
-  async create(payload: Partial<Blog> & { article?: Partial<Article> }): Promise<Blog> {
+  async create(
+    payload: Partial<Blog> & { article?: Partial<Article> }
+  ): Promise<Blog> {
     return this.ds.manager.transaction(async (manager) => {
       const articleRepo = manager.getRepository(Article);
       const blogRepo = manager.getRepository(Blog);
@@ -37,25 +39,49 @@ export class BlogDAO {
     });
   }
 
-  async update(id: number, patch: Partial<Blog>): Promise<Blog | null> {
-    const repo = this.ds.getRepository(Blog);
-    const blog = await repo.findOneBy({ BlogId: id });
-    if (!blog) return null;
-    repo.merge(blog, patch);
-    return repo.save(blog);
+  async update(
+    id: number,
+    patch: Partial<Blog> & { article?: Partial<Article> }
+  ): Promise<Blog | null> {
+    return this.ds.manager.transaction(async (manager) => {
+      const blogRepo = manager.getRepository(Blog);
+      const articleRepo = manager.getRepository(Article);
+
+      // Find the blog with its article relation
+      const blog = await blogRepo.findOne({
+        where: { BlogId: id },
+        relations: ["article"],
+      });
+
+      if (!blog) return null;
+
+      // Update the article if article data is provided
+      if (patch.article && blog.article) {
+        patch.article.UpdatedAt = new Date();
+        articleRepo.merge(blog.article, patch.article);
+        await articleRepo.save(blog.article);
+      }
+
+      // Remove article from patch before merging into blog
+      const { article, ...blogPatch } = patch;
+
+      // Update the blog properties
+      blogRepo.merge(blog, blogPatch);
+      return blogRepo.save(blog);
+    });
   }
-  
+
   async delete(id: number): Promise<boolean> {
     return this.ds.manager.transaction(async (manager) => {
       const blogRepo = manager.getRepository(Blog);
       const articleRepo = manager.getRepository(Article);
 
       // Find the blog with its article relation
-      const blog = await blogRepo.findOne({ 
+      const blog = await blogRepo.findOne({
         where: { BlogId: id },
-        relations: ["article"]
+        relations: ["article"],
       });
-      
+
       if (!blog) return false;
 
       // Delete blog first (to avoid FK constraint violation)

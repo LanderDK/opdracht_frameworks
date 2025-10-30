@@ -55,9 +55,9 @@ const createBlog = async (req: Request, res: Response, next: NextFunction) => {
 };
 createBlog.validationScheme = {
   body: {
-    title: Joi.string().min(5).max(200).required(),
-    excerpt: Joi.string().min(20).max(500).required(),
-    content: Joi.string().min(50).required(),
+    title: Joi.string().min(1).max(200).required(), // min 5
+    excerpt: Joi.string().min(1).max(500).required(), // min 20
+    content: Joi.string().min(1).required(), // min 50
     slug: Joi.string().max(255).required(),
     tags: Joi.array().items(Joi.string().max(50)).optional(),
   },
@@ -75,7 +75,13 @@ const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
     const readtimeInMinutes = Math.ceil(wordCount / 200);
 
     const payload = {
-      ...req.body,
+      article: {
+        Title: req.body.title,
+        Excerpt: req.body.excerpt,
+        Content: req.body.content,
+        Slug: req.body.slug,
+        Tags: req.body.tags,
+      } as any,
       readtime: readtimeInMinutes,
     };
 
@@ -95,9 +101,9 @@ updateBlog.validationScheme = {
     id: Joi.number().integer().positive().required(),
   },
   body: {
-    title: Joi.string().min(5).max(200).optional(),
-    excerpt: Joi.string().min(20).max(500).optional(),
-    content: Joi.string().min(50).optional(),
+    title: Joi.string().min(1).max(200).optional(), // min 5
+    excerpt: Joi.string().min(1).max(500).optional(), // min 20
+    content: Joi.string().min(1).optional(), // min 50
     slug: Joi.string().max(255).optional(),
     tags: Joi.array().items(Joi.string().max(50)).optional(),
   },

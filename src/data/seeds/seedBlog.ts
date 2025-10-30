@@ -59,6 +59,7 @@ export async function seedBlogs(ensureCount: number = 5): Promise<Blog[]> {
       const updatedAt = faker.date.between(publishedAt, new Date());
 
       newArticles.push({
+        Title: faker.lorem.sentence(),
         Excerpt: faker.lorem.sentence(),
         ArticleType: "blog",
         Slug: faker.helpers.slugify(faker.lorem.words(3)).toLowerCase(),

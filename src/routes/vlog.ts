@@ -26,6 +26,7 @@ getVlogById.validationScheme = {
     id: Joi.number().integer().positive().required(),
   },
 };
+
 // POST create new vlog
 const createVlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -38,7 +39,7 @@ const createVlog = async (req: Request, res: Response, next: NextFunction) => {
         Slug: req.body.slug,
         Tags: req.body.tags,
       } as any,
-      video_file: req.body.video_file,
+      videofile: req.body.videofile,
     };
     const vlog = await vlogDao.create(payload);
     res.status(201).json(vlog);
@@ -48,12 +49,12 @@ const createVlog = async (req: Request, res: Response, next: NextFunction) => {
 };
 createVlog.validationScheme = {
   body: {
-    title: Joi.string().min(5).max(200).required(),
-    excerpt: Joi.string().min(20).max(500).required(),
-    content: Joi.string().min(50).required(),
+    title: Joi.string().min(1).max(200).required(), // min 5
+    excerpt: Joi.string().min(1).max(500).required(), // min 20
+    content: Joi.string().min(1).required(), // min 50
     slug: Joi.string().max(255).required(),
     tags: Joi.array().items(Joi.string().max(50)).optional(),
-    video_file: Joi.string().uri().required(),
+    videofile: Joi.string().uri().required(),
   },
 };
 
@@ -63,7 +64,14 @@ const updateVlog = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id, 10);
 
     const payload = {
-      ...req.body,
+      article: {
+        Title: req.body.title,
+        Excerpt: req.body.excerpt,
+        Content: req.body.content,
+        Slug: req.body.slug,
+        Tags: req.body.tags,
+      } as any,
+      videofile: req.body.video_file,
     };
 
     const vlog = await vlogDao.update(id, payload);
@@ -82,12 +90,12 @@ updateVlog.validationScheme = {
     id: Joi.number().integer().positive().required(),
   },
   body: {
-    title: Joi.string().min(5).max(200).optional(),
-    excerpt: Joi.string().min(20).max(500).optional(),
-    content: Joi.string().min(50).optional(),
+    title: Joi.string().min(1).max(200).required(), // min 5
+    excerpt: Joi.string().min(1).max(500).required(), // min 20
+    content: Joi.string().min(1).required(), // min 50
     slug: Joi.string().max(255).optional(),
     tags: Joi.array().items(Joi.string().max(50)).optional(),
-    video_file: Joi.string().uri().optional(),
+    videofile: Joi.string().uri().optional(),
   },
 };
 
