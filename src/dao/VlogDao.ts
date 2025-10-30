@@ -1,7 +1,7 @@
-import { AppDataSource } from "../data-source";
-import { Vlog } from "../entity/Vlog";
-import { Article } from "../entity/Article";
-import { VideoFile } from "../entity/VideoFile";
+import { AppDataSource } from "../data/data-source";
+import { Vlog } from "../data/entity/Vlog";
+import { Article } from "../data/entity/Article";
+import { VideoFile } from "../data/entity/VideoFile";
 
 export class VlogDAO {
   constructor(protected ds = AppDataSource) {}
@@ -25,8 +25,8 @@ export class VlogDAO {
       const videoRepo = manager.getRepository(VideoFile);
 
       let savedVideo: VideoFile | undefined;
-      if (payload.videoFile) {
-        const vf = videoRepo.create(payload.videoFile);
+      if (payload.videofile) {
+        const vf = videoRepo.create(payload.videofile);
         savedVideo = await videoRepo.save(vf);
       }
 

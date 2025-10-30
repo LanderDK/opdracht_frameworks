@@ -1,24 +1,35 @@
 {
-   "name": "opdracht_frameworks",
-   "version": "0.0.1",
-   "description": "Awesome project developed with TypeORM.",
-   "type": "commonjs",
-   "devDependencies": {
-      "@types/faker": "^6.6.8",
-      "@types/node": "^22.13.10",
-      "ts-node": "^10.9.2",
-      "typescript": "^5.8.2"
-   },
-   "dependencies": {
-      "dotenv": "^17.2.3",
-      "faker": "^5.5.3",
-      "mysql2": "^3.14.0",
-      "reflect-metadata": "^0.2.2",
-      "typeorm": "0.3.27"
-   },
-   "scripts": {
-      "start": "ts-node src/index.ts",
-      "typeorm": "typeorm-ts-node-commonjs",
-      "seed": "ts-node src/seeds/index.ts"
-   }
+  "name": "opdracht_frameworks",
+  "version": "0.0.1",
+  "description": "Awesome project developed with TypeORM.",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/faker": "^6.6.8",
+    "@types/node": "^22.13.10",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/winston": "^2.4.4",
+    "cors": "^2.8.5",
+    "env-cmd": "^11.0.0",
+    "express": "^5.1.0",
+    "faker": "^5.5.3",
+    "joi": "^18.0.1",
+    "mysql2": "^3.14.0",
+    "node-emoji": "^2.2.0",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "0.3.27",
+    "winston": "^3.18.3"
+  },
+  "scripts": {
+    "start": "env-cmd ts-node src/index.ts",
+    "server": "env-cmd ts-node src/server.ts",
+    "dev": "env-cmd nodemon --exec npx ts-node src/server.ts",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "seed": "env-cmd ts-node src/data/seeds/index.ts"
+  }
 }

@@ -1,6 +1,7 @@
-import { AppDataSource } from "./data-source";
+import { AppDataSource } from "./data/data-source";
 import { ArticleDAO } from "./dao/ArticleDao";
 import { BlogDAO } from "./dao/BlogDao";
+import process from "process";
 
 /**
  * Debug/Test harness for Blog DAO
@@ -96,10 +97,9 @@ async function main() {
     console.log(`Total Articles: ${allArticles.length}`);
 
     console.log("\n✓ Debug harness completed successfully!");
-
   } catch (err) {
     console.error("\n❌ Error during debug/test:", err);
-    process.exitCode = 1;
+    process.exit(-1);
   } finally {
     try {
       await AppDataSource.destroy();

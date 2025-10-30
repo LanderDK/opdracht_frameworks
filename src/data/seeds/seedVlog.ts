@@ -22,6 +22,7 @@ export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
 
   // Ensure video files exist
   let videoFiles = await videoFileRepository.find();
+
   if (videoFiles.length === 0) {
     console.log("No video files found — creating sample video files");
     const newVideoFiles: Partial<VideoFile>[] = [];
