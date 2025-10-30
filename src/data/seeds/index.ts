@@ -35,14 +35,12 @@ export async function runSeeds() {
 
     // Clear existing data
     await clearDatabase();
-
     // Seed in the correct order to respect relationships
     await seedUsers(3);
     await seedVideoFiles(5);
     await seedBlogs();
     await seedVlogs();
     await seedComments(10);
-    await seedUserArticles(10);
 
     console.log("\n✅ Database seeding completed successfully!");
   } catch (error) {

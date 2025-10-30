@@ -1,4 +1,5 @@
 import { AppDataSource } from "../data-source";
+import { Article } from "../entity/Article";
 import { Blog } from "../entity/Blog";
 import * as faker from "faker";
 
@@ -9,6 +10,7 @@ import * as faker from "faker";
  */
 export async function seedBlogs(ensureCount: number = 5): Promise<Blog[]> {
   const blogRepository = AppDataSource.getRepository(Blog);
+  const articleRepository = AppDataSource.getRepository(Article);
 
   // Check if blogs already exist
   const existingCount = await blogRepository.count();
@@ -50,17 +52,19 @@ export async function seedBlogs(ensureCount: number = 5): Promise<Blog[]> {
 
     // Create Blog directly - TypeORM will create both Article and Blog rows
     const blog = new Blog();
-    blog.Excerpt = faker.lorem.sentence();
-    blog.Slug = faker.helpers.slugify(faker.lorem.words(3)).toLowerCase();
-    blog.Content = faker.lorem.paragraphs(3);
-    blog.Tags = tags;
-    blog.PublishedAt = publishedAt;
-    blog.UpdatedAt = updatedAt;
+    blog.Article = new Article();
+    blog.Article.Excerpt = faker.lorem.sentence();
+    blog.Article.Slug = faker.helpers.slugify(faker.lorem.words(3)).toLowerCase();
+    blog.Article.Content = faker.lorem.paragraphs(3);
+    blog.Article.Tags = tags;
+    blog.Article.Title = faker.lorem.sentence();
+    blog.Article.PublishedAt = publishedAt;
+    blog.Article.UpdatedAt = updatedAt;
     blog.Readtime = Math.floor(Math.random() * 14) + 2;
-
+    blog.Article.ArticleType = "Blog";
     blogs.push(blog);
+    await articleRepository.save(blog.Article);
   }
-
   await blogRepository.save(blogs);
   console.log(`✓ Seeded ${blogs.length} blogs`);
   return blogs;

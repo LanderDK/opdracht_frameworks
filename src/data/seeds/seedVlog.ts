@@ -2,6 +2,7 @@ import { AppDataSource } from "../data-source";
 import { Vlog } from "../entity/Vlog";
 import { VideoFile } from "../entity/VideoFile";
 import * as faker from "faker";
+import { Article } from "../entity/Article";
 
 /**
  * Seed Vlog rows using TypeORM Class-Table Inheritance.
@@ -10,7 +11,7 @@ import * as faker from "faker";
 export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
   const vlogRepository = AppDataSource.getRepository(Vlog);
   const videoFileRepository = AppDataSource.getRepository(VideoFile);
-
+  const articleRepository = AppDataSource.getRepository(Article);
   // Check if vlogs already exist
   const existingCount = await vlogRepository.count();
   if (existingCount > 0) {
@@ -64,16 +65,20 @@ export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
 
     // Create Vlog directly - TypeORM will create both Article and Vlog rows
     const vlog = new Vlog();
-    vlog.Excerpt = faker.lorem.sentence();
-    vlog.Slug = faker.helpers.slugify(faker.lorem.words(3)).toLowerCase();
-    vlog.Content = faker.lorem.paragraphs(3);
-    vlog.Tags = tags;
-    vlog.PublishedAt = publishedAt;
-    vlog.UpdatedAt = updatedAt;
-    vlog.VideoFileId = videoFiles[i % videoFiles.length].VideoFileId;
+    vlog.Article = new Article();
+    vlog.Article.Excerpt = faker.lorem.sentence();
+    vlog.Article.Slug = faker.helpers.slugify(faker.lorem.words(3)).toLowerCase();
+    vlog.Article.Content = faker.lorem.paragraphs(3);
+    vlog.Article.Tags = tags;
+    vlog.Article.Title = faker.lorem.sentence();
+    vlog.Article.PublishedAt = publishedAt;
+    vlog.Article.UpdatedAt = updatedAt;
+    vlog.Article.ArticleType = "Blog";
+    //vlog.VideoFileId = videoFiles[i % videoFiles.length].VideoFileId;
     vlog.VideoFile = videoFiles[i % videoFiles.length];
 
     vlogs.push(vlog);
+    await articleRepository.save(vlog.Article);
   }
 
   await vlogRepository.save(vlogs);

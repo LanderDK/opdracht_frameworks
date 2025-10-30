@@ -39,9 +39,8 @@ export async function seedComments(count: number = 50): Promise<Comment[]> {
     comment.PublishedAt = faker.date.past(0.5); // Within last 6 months
 
     // Randomly assign a user and article
-    comment.UserId = users[Math.floor(Math.random() * users.length)].UserId;
-    comment.ArticleId =
-      articles[Math.floor(Math.random() * articles.length)].ArticleId;
+    comment.User = users[Math.floor(Math.random() * users.length)];
+    comment.Article = articles[Math.floor(Math.random() * articles.length)];
 
     comments.push(comment);
   }
