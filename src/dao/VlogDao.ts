@@ -25,8 +25,8 @@ export class VlogDAO {
       const videoRepo = manager.getRepository(VideoFile);
 
       let savedVideo: VideoFile | undefined;
-      if (payload.videofile) {
-        const vf = videoRepo.create(payload.videofile);
+      if (payload.VideoFile) {
+        const vf = videoRepo.create(payload.VideoFile);
         savedVideo = await videoRepo.save(vf);
       }
 

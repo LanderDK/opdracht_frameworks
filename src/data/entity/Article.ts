@@ -6,7 +6,7 @@ export abstract class Article {
   @PrimaryGeneratedColumn()
   ArticleId: number;
 
-  @Column()
+  @Column({nullable: true})
   Title: string;
 
   @Column()

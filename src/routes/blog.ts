@@ -45,7 +45,7 @@ const createBlog = async (req: Request, res: Response, next: NextFunction) => {
         Slug: req.body.slug,
         Tags: req.body.tags,
       } as any,
-      readtime: readtimeInMinutes,
+      Readtime: readtimeInMinutes,
     };
     const blog = await blogDao.create(payload);
     res.status(201).json(blog);
@@ -82,7 +82,7 @@ const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
         Slug: req.body.slug,
         Tags: req.body.tags,
       } as any,
-      readtime: readtimeInMinutes,
+      Readtime: readtimeInMinutes,
     };
 
     const blog = await blogDao.update(id, payload);

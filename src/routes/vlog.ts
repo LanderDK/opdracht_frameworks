@@ -3,6 +3,7 @@ import { VlogDAO } from "../dao/VlogDao";
 import { ServiceError } from "../core/serviceError";
 import validate from "../core/validation";
 import Joi from "joi";
+import { VideoFile } from "../data/entity/VideoFile";
 
 const vlogDao = new VlogDAO();
 
@@ -39,7 +40,7 @@ const createVlog = async (req: Request, res: Response, next: NextFunction) => {
         Slug: req.body.slug,
         Tags: req.body.tags,
       } as any,
-      videofile: req.body.videofile,
+      VideoFile: req.body.VideoFile,
     };
     const vlog = await vlogDao.create(payload);
     res.status(201).json(vlog);
@@ -54,7 +55,7 @@ createVlog.validationScheme = {
     content: Joi.string().min(1).required(), // min 50
     slug: Joi.string().max(255).required(),
     tags: Joi.array().items(Joi.string().max(50)).optional(),
-    videofile: Joi.string().uri().required(),
+    VideoFile: Joi.string().uri().required(),
   },
 };
 
@@ -71,7 +72,7 @@ const updateVlog = async (req: Request, res: Response, next: NextFunction) => {
         Slug: req.body.slug,
         Tags: req.body.tags,
       } as any,
-      videofile: req.body.video_file,
+      VideoFile: req.body.video_file,
     };
 
     const vlog = await vlogDao.update(id, payload);
@@ -95,7 +96,7 @@ updateVlog.validationScheme = {
     content: Joi.string().min(1).required(), // min 50
     slug: Joi.string().max(255).optional(),
     tags: Joi.array().items(Joi.string().max(50)).optional(),
-    videofile: Joi.string().uri().optional(),
+    VideoFile: Joi.string().uri().optional(),
   },
 };
 
