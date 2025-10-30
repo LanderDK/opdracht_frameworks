@@ -73,8 +73,7 @@ export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
     vlog.Article.Title = faker.lorem.sentence();
     vlog.Article.PublishedAt = publishedAt;
     vlog.Article.UpdatedAt = updatedAt;
-    vlog.Article.ArticleType = "Blog";
-    //vlog.VideoFileId = videoFiles[i % videoFiles.length].VideoFileId;
+    vlog.Article.ArticleType = "Vlog";
     vlog.VideoFile = videoFiles[i % videoFiles.length];
 
     vlogs.push(vlog);
