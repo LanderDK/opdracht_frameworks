@@ -4,7 +4,7 @@ import { Server } from "http";
 import { installRestRoutes } from "./routes";
 import { initializeLogger, getLogger } from "./core/logging";
 import { ServiceError } from "./core/serviceError";
-import emoji from "node-emoji";
+import * as emoji from "node-emoji";
 import { initializeData, shutdownData } from "./data";
 
 // Configuration
