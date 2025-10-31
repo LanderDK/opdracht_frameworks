@@ -14,6 +14,8 @@ export class Vlog {
   @JoinColumn({ name: "ArticleId" })
   Article: Article;
 
+
+  //Ophalen met await vlog.VideoFile
   @OneToOne(() => VideoFile, { lazy: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "VideoFileId" })
   VideoFile: VideoFile;

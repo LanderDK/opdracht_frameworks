@@ -3,8 +3,6 @@ import { BlogDAO } from "../dao/BlogDao";
 import { ServiceError } from "../core/serviceError";
 import validate from "../core/validation";
 import Joi from "joi";
-import { ArticleDAO } from "../dao/ArticleDao";
-import { Article } from "../data/entity/Article";
 
 const blogDao = new BlogDAO();
 
