@@ -3,6 +3,7 @@ import installArticleRouter from "./article";
 import installBlogRouter from "./blog";
 import installVlogRouter from "./vlog";
 import installCommentRouter from "./comment";
+import installUserRouter from "./user";
 
 export function installRestRoutes(app: Application): void {
   // Create a single router with /api prefix
@@ -13,6 +14,7 @@ export function installRestRoutes(app: Application): void {
   installBlogRouter(router);
   installVlogRouter(router);
   installCommentRouter(router);
+  installUserRouter(router);
 
   // Mount the router with the /api prefix
   app.use("/api", router);
