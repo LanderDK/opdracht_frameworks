@@ -2,6 +2,7 @@ import { AppDataSource } from "../data/data-source";
 import { Blog } from "../data/entity/Blog";
 import { Article } from "../data/entity/Article";
 import { FindManyOptions, Repository } from "typeorm";
+import { ArticleType } from "../data/enum/ArticleType";
 
 export class BlogDAO {
   protected repo: Repository<Blog>;
@@ -28,7 +29,7 @@ export class BlogDAO {
 
     const article = repo_art.create({
       ...payload.Article,
-      ArticleType: "blog",
+      ArticleType: ArticleType.BLOG,
       PublishedAt: payload.Article.PublishedAt ?? new Date(),
       UpdatedAt: payload.Article.UpdatedAt ?? new Date(),
     });

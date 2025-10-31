@@ -2,6 +2,7 @@ import { AppDataSource } from "../data/data-source";
 import { Article } from "../data/entity/Article";
 import { VideoFile } from "../data/entity/VideoFile";
 import { Vlog } from "../data/entity/Vlog";
+import { ArticleType } from "../data/enum/ArticleType";
 
 export class VlogDAO {
   constructor(protected ds = AppDataSource) {}
@@ -34,6 +35,7 @@ export class VlogDAO {
     const savedVideoFile = await repo_vid.save(videoFile);
     const article = repo_art.create({
       ...payload.Article,
+      ArticleType: ArticleType.VLOG,
       PublishedAt: payload.Article.PublishedAt ?? new Date(),
       UpdatedAt: payload.Article.UpdatedAt ?? new Date(),
     });

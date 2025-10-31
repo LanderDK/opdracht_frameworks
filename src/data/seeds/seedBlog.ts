@@ -2,6 +2,7 @@ import { AppDataSource } from "../data-source";
 import { Article } from "../entity/Article";
 import { Blog } from "../entity/Blog";
 import * as faker from "faker";
+import { ArticleType } from "../enum/ArticleType";
 
 /**
  * Seed Blog rows using TypeORM Class-Table Inheritance.
@@ -61,7 +62,7 @@ export async function seedBlogs(ensureCount: number = 5): Promise<Blog[]> {
     blog.Article.PublishedAt = publishedAt;
     blog.Article.UpdatedAt = updatedAt;
     blog.Readtime = Math.floor(Math.random() * 14) + 2;
-    blog.Article.ArticleType = "Blog";
+    blog.Article.ArticleType = ArticleType.BLOG;
     blogs.push(blog);
     await articleRepository.save(blog.Article);
   }

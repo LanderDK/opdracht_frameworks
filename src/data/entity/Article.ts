@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { ArticleType } from "../enum/ArticleType";
 
 @Entity()
 export class Article {
@@ -26,6 +27,9 @@ export class Article {
   @Column()
   UpdatedAt: Date;
 
-  @Column()
-  ArticleType: string;
+  @Column({
+    type: "enum",
+    enum: ArticleType,
+  })
+  ArticleType: ArticleType;
 }

@@ -3,6 +3,7 @@ import { Vlog } from "../entity/Vlog";
 import { VideoFile } from "../entity/VideoFile";
 import * as faker from "faker";
 import { Article } from "../entity/Article";
+import { ArticleType } from "../enum/ArticleType";
 
 /**
  * Seed Vlog rows using TypeORM Class-Table Inheritance.
@@ -73,7 +74,7 @@ export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
     vlog.Article.Title = faker.lorem.sentence();
     vlog.Article.PublishedAt = publishedAt;
     vlog.Article.UpdatedAt = updatedAt;
-    vlog.Article.ArticleType = "Vlog";
+    vlog.Article.ArticleType = ArticleType.VLOG;
     vlog.VideoFileId = videoFiles[i % videoFiles.length].VideoFileId;
 
     vlogs.push(vlog);
