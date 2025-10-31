@@ -74,7 +74,7 @@ export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
     vlog.Article.PublishedAt = publishedAt;
     vlog.Article.UpdatedAt = updatedAt;
     vlog.Article.ArticleType = "Vlog";
-    vlog.VideoFile = videoFiles[i % videoFiles.length];
+    vlog.VideoFileId = videoFiles[i % videoFiles.length].VideoFileId;
 
     vlogs.push(vlog);
     await articleRepository.save(vlog.Article);

@@ -87,7 +87,6 @@ const updateVlog = async (req: Request, res: Response, next: NextFunction) => {
         Slug: req.body.Article.Slug,
         Tags: req.body.Article.Tags,
       } as any,
-      VideoFile: req.body.VideoFile,
     };
 
     const vlog = await vlogDao.update(id, payload);
@@ -112,9 +111,6 @@ updateVlog.validationScheme = {
       Content: Joi.string().min(50).optional(),
       Slug: Joi.string().max(255).optional(),
       Tags: Joi.array().items(Joi.string().max(50)).optional(),
-    }).optional(),
-    VideoFile: Joi.object({
-      VideoFileUrl: Joi.string().uri().optional(),
     }).optional(),
   },
 };

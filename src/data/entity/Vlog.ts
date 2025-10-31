@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
 import { Article } from "./Article";
 import { VideoFile } from "./VideoFile";
 
@@ -6,6 +6,9 @@ import { VideoFile } from "./VideoFile";
 export class Vlog {
   @PrimaryColumn()
   ArticleId: number;
+
+  @Column()
+  VideoFileId: number;
 
   @OneToOne(() => Article, { eager: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "ArticleId" })
