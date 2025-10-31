@@ -41,6 +41,7 @@ export async function runSeeds() {
     await seedBlogs();
     await seedVlogs();
     await seedComments(10);
+    await seedUserArticles(5);
 
     console.log("\n✅ Database seeding completed successfully!");
   } catch (error) {
