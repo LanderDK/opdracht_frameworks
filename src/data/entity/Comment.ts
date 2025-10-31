@@ -22,9 +22,9 @@ export class Comment {
 
   @ManyToOne(() => Article, { onDelete: "CASCADE", eager: true })
   @JoinColumn({ name: "ArticleId" })
-  Article!: Article;
+  ArticleId!: number;
 
   @ManyToOne(() => User, { onDelete: "CASCADE", eager: true })
   @JoinColumn({ name: "UserId" })
-  User!: User;
+  UserId!: number;
 }

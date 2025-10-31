@@ -107,15 +107,15 @@ updateVlog.validationScheme = {
   },
   body: {
     Article: Joi.object({
-      Title: Joi.string().min(1).max(200).required(), // min 5
-      Excerpt: Joi.string().min(1).max(500).required(), // min 20
-      Content: Joi.string().min(1).required(), // min 50
+      Title: Joi.string().min(5).max(200).optional(),
+      Excerpt: Joi.string().min(20).max(500).optional(),
+      Content: Joi.string().min(50).optional(),
       Slug: Joi.string().max(255).optional(),
       Tags: Joi.array().items(Joi.string().max(50)).optional(),
-    }).required(),
+    }).optional(),
     VideoFile: Joi.object({
-      VideoFileUrl: Joi.string().uri().required(),
-    }).required(),
+      VideoFileUrl: Joi.string().uri().optional(),
+    }).optional(),
   },
 };
 
