@@ -27,8 +27,7 @@
   },
   "scripts": {
     "start": "env-cmd ts-node src/index.ts",
-    "server": "env-cmd ts-node src/server.ts",
-    "dev": "env-cmd nodemon --exec npx ts-node src/server.ts",
+    "dev": "env-cmd nodemon --exec npx ts-node src/index.ts",
     "typeorm": "typeorm-ts-node-commonjs",
     "seed": "env-cmd ts-node src/data/seeds/index.ts"
   }

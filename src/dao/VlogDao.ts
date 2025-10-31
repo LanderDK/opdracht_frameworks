@@ -2,18 +2,17 @@ import { AppDataSource } from "../data/data-source";
 import { Article } from "../data/entity/Article";
 import { Vlog } from "../data/entity/Vlog";
 
-export class VlogDAO{
-
-  constructor(protected ds = AppDataSource) {
-  
-  }
+export class VlogDAO {
+  constructor(protected ds = AppDataSource) {}
 
   async findAll(): Promise<Vlog[]> {
-    return this.ds.getRepository(Vlog).find({ relations: ['Article'] });
+    return this.ds.getRepository(Vlog).find({ relations: ["Article"] });
   }
 
   async findById(id: number): Promise<Vlog | null> {
-    return this.ds.getRepository(Vlog).findOne({ where: { ArticleId: id }, relations: ['Article'] });
+    return this.ds
+      .getRepository(Vlog)
+      .findOne({ where: { ArticleId: id }, relations: ["Article"] });
   }
 
   async create(payload: Partial<Vlog>): Promise<Vlog> {
@@ -23,9 +22,9 @@ export class VlogDAO{
     if (!payload.Article) {
       throw new Error("Article data is required to create a Vlog");
     }
-    console.log(payload.Article);
+
     const article = repo_art.create({
-    ...payload.Article,
+      ...payload.Article,
       PublishedAt: payload.Article.PublishedAt ?? new Date(),
       UpdatedAt: payload.Article.UpdatedAt ?? new Date(),
     });
@@ -40,13 +39,13 @@ export class VlogDAO{
   }
 
   async update(id: number, patch: Partial<Vlog>): Promise<Vlog | null> {
-  const repo = this.ds.getRepository(Vlog);
-  const repo_art = this.ds.getRepository(Article);
-  
-  // Load blog WITH Article data
-  const blog = await repo.findOne({ 
+    const repo = this.ds.getRepository(Vlog);
+    const repo_art = this.ds.getRepository(Article);
+
+    // Load blog WITH Article data
+    const blog = await repo.findOne({
       where: { ArticleId: id },
-      relations: ['Article']
+      relations: ["Article"],
     });
 
     if (!blog) return null;
@@ -69,20 +68,20 @@ export class VlogDAO{
   async delete(id: number): Promise<boolean> {
     const repo = this.ds.getRepository(Vlog);
     const repo_art = this.ds.getRepository(Article);
-    
+
     // Load blog to get ArticleId
-    const vlog = await repo.findOne({ 
-      where: { ArticleId: id }
+    const vlog = await repo.findOne({
+      where: { ArticleId: id },
     });
-    
+
     if (!vlog) return false;
-    
+
     // Delete Blog first (geen cascade van blog naar article)
     await repo.remove(vlog);
-    
+
     // Then delete Article (dit triggert cascade naar andere entities)
     await repo_art.delete(id);
-    
+
     return true;
   }
 }

@@ -8,11 +8,7 @@ import { VideoFile } from "../data/entity/VideoFile";
 const vlogDao = new VlogDAO();
 
 //GET ALL VLOGS
-const getAllVlogs = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getAllVlogs = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const vlogs = await vlogDao.findAll();
     res.json(vlogs);
@@ -45,7 +41,6 @@ getVlogById.validationScheme = {
 // POST create new vlog
 const createVlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.body);
     const payload = {
       Article: {
         Title: req.body.Article.Title,
@@ -65,14 +60,13 @@ const createVlog = async (req: Request, res: Response, next: NextFunction) => {
 };
 createVlog.validationScheme = {
   body: {
-    Article:
-      Joi.object({
-        Title: Joi.string().min(1).max(200).required(), // min 5
-        Excerpt: Joi.string().min(1).max(500).required(), // min 20
-        Content: Joi.string().min(1).required(), // min 50
-        Slug: Joi.string().max(255).optional(),
-        Tags: Joi.array().items(Joi.string().max(50)).optional(),
-      }).required(),
+    Article: Joi.object({
+      Title: Joi.string().min(1).max(200).required(), // min 5
+      Excerpt: Joi.string().min(1).max(500).required(), // min 20
+      Content: Joi.string().min(1).required(), // min 50
+      Slug: Joi.string().max(255).optional(),
+      Tags: Joi.array().items(Joi.string().max(50)).optional(),
+    }).required(),
     VideoFile: Joi.object({
       VideoFileUrl: Joi.string().uri().required(),
     }).required(),
@@ -112,14 +106,13 @@ updateVlog.validationScheme = {
     id: Joi.number().integer().positive().required(),
   },
   body: {
-    Article:
-      Joi.object({
-        Title: Joi.string().min(1).max(200).required(), // min 5
-        Excerpt: Joi.string().min(1).max(500).required(), // min 20
-        Content: Joi.string().min(1).required(), // min 50
-        Slug: Joi.string().max(255).optional(),
-        Tags: Joi.array().items(Joi.string().max(50)).optional(),
-      }).required(),
+    Article: Joi.object({
+      Title: Joi.string().min(1).max(200).required(), // min 5
+      Excerpt: Joi.string().min(1).max(500).required(), // min 20
+      Content: Joi.string().min(1).required(), // min 50
+      Slug: Joi.string().max(255).optional(),
+      Tags: Joi.array().items(Joi.string().max(50)).optional(),
+    }).required(),
     VideoFile: Joi.object({
       VideoFileUrl: Joi.string().uri().required(),
     }).required(),
