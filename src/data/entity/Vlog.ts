@@ -7,11 +7,11 @@ export class Vlog {
   @PrimaryColumn()
   ArticleId: number;
 
-  @OneToOne(() => Article, { cascade: true, eager: true, onDelete: 'CASCADE' })
+  @OneToOne(() => Article, { eager: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "ArticleId" })
   Article: Article;
 
-  @OneToOne(() => VideoFile, { cascade: true, eager: true })
+  @OneToOne(() => VideoFile, { lazy: true, onDelete: "CASCADE" })
   @JoinColumn({ name: "VideoFileId" })
   VideoFile: VideoFile;
 }

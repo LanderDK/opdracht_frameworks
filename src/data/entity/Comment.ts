@@ -1,4 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Article } from "./Article";
 import { User } from "./User";
 
@@ -13,11 +20,11 @@ export class Comment {
   @Column()
   PublishedAt: Date;
 
-  @ManyToOne(() => Article, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Article, { onDelete: "CASCADE", eager: true })
   @JoinColumn({ name: "ArticleId" })
   Article!: Article;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { onDelete: "CASCADE", eager: true })
   @JoinColumn({ name: "UserId" })
   User!: User;
 }

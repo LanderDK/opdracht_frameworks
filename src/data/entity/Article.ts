@@ -8,7 +8,7 @@ export class Article {
   @Column({ length: 256 })
   Title: string;
 
-  @Column({ length: 1024 } )
+  @Column({ length: 1024 })
   Excerpt: string;
 
   @Column({ length: 8192 })
