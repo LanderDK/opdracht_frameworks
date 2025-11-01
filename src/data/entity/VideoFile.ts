@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Vlog } from "./Vlog";
 
 @Entity()
 export class VideoFile {
@@ -7,4 +8,7 @@ export class VideoFile {
 
   @Column()
   VideoFileUrl: string;
+
+  @OneToOne(() => Vlog, (vlog) => vlog.VideoFile)
+  Vlog: Vlog;
 }
