@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { ArticleDAO } from "../dao/ArticleDao";
+import { ServiceError } from "../core/serviceError";
 import Joi from "joi";
 import validate from "../core/validation";
 
@@ -28,8 +29,7 @@ const getArticleById = async (
     const articleId = parseInt(req.params.id, 10);
     const article = await articleDao.findById(articleId);
     if (!article) {
-      res.status(404).json({ message: "Article not found" });
-      return;
+      throw ServiceError.notFound("Article not found", { id: articleId });
     }
     res.json(article);
   } catch (error) {

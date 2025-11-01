@@ -4,16 +4,17 @@ import { Vlog } from "../data/entity/Vlog";
 import { ArticleType } from "../data/enum/ArticleType";
 
 export class VlogDAO {
-  protected repo = this.ds.getRepository(Vlog);
+  protected repoVlog = this.ds.getRepository(Vlog);
+  protected repoVideoFile = this.ds.getRepository(VideoFile);
 
   constructor(protected ds = AppDataSource) {}
 
   async findAll(): Promise<Vlog[]> {
-    return this.repo.find(); // Eager loading removed; lazy loading will be used in routes
+    return this.repoVlog.find(); // Eager loading removed; lazy loading will be used in routes
   }
 
   async findById(id: number): Promise<Vlog | null> {
-    return this.repo.findOne({
+    return this.repoVlog.findOne({
       where: { ArticleId: id },
       relations: ["VideoFile"], // dit zorgt ervoor dat de VideoFile ook geladen wordt, hetzelfde als "await vlog.VideoFile" in de route
     });
@@ -22,38 +23,31 @@ export class VlogDAO {
   async create(
     payload: Partial<Vlog> & { VideoFile?: Partial<VideoFile> }
   ): Promise<Vlog> {
-    const repo = this.ds.getRepository(Vlog);
-    const repo_vid = this.ds.getRepository(VideoFile);
-
-    if (!payload.VideoFile) {
-      throw new Error("VideoFile data is required to create a Vlog");
-    }
-
     // Create and save VideoFile first
-    const videoFile = repo_vid.create(payload.VideoFile);
-    const savedVideoFile = await repo_vid.save(videoFile);
+    const videoFile = this.repoVideoFile.create(payload.VideoFile);
+    const savedVideoFile = await this.repoVideoFile.save(videoFile);
+
+    // Remove VideoFile from payload before creating vlog
+    const { VideoFile: _, ...vlogData } = payload;
 
     // Create Vlog with Article properties (inherited) and VideoFileId
-    const vlog = repo.create({
-      ...payload,
+    const vlog = this.repoVlog.create({
+      ...vlogData,
       ArticleType: ArticleType.VLOG,
-      PublishedAt: payload.PublishedAt ?? new Date(),
-      UpdatedAt: payload.UpdatedAt ?? new Date(),
+      PublishedAt: vlogData.PublishedAt ?? new Date(),
+      UpdatedAt: vlogData.UpdatedAt ?? new Date(),
       VideoFileId: savedVideoFile.VideoFileId,
     });
 
-    return repo.save(vlog);
+    return this.repoVlog.save(vlog);
   }
 
   async update(
     id: number,
     patch: Partial<Vlog> & { VideoFile?: Partial<VideoFile> }
   ): Promise<Vlog | null> {
-    const repo = this.ds.getRepository(Vlog);
-    const repo_vid = this.ds.getRepository(VideoFile);
-
     // Load vlog with VideoFile relation
-    const vlog = await repo.findOne({
+    const vlog = await this.repoVlog.findOne({
       where: { ArticleId: id },
       relations: ["VideoFile"],
     });
@@ -64,7 +58,7 @@ export class VlogDAO {
     if (patch.VideoFile && vlog.VideoFile) {
       const videoFile = await vlog.VideoFile; // Lazy load
       Object.assign(videoFile, patch.VideoFile);
-      await repo_vid.save(videoFile);
+      await this.repoVideoFile.save(videoFile);
     }
 
     // Remove VideoFile from patch before updating vlog
@@ -74,11 +68,11 @@ export class VlogDAO {
     Object.assign(vlog, vlogPatch);
     vlog.UpdatedAt = new Date();
 
-    return repo.save(vlog);
+    return this.repoVlog.save(vlog);
   }
 
   async delete(id: number): Promise<boolean> {
-    const result = await this.repo.delete({ ArticleId: id });
+    const result = await this.repoVlog.delete({ ArticleId: id });
     return result.affected !== 0;
   }
 }
