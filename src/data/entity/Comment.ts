@@ -19,11 +19,17 @@ export class Comment {
   @Column()
   PublishedAt: Date;
 
-  @ManyToOne(() => Article, { onDelete: "CASCADE", eager: true })
+  @Column()
+  ArticleId: number;
+
+  @Column()
+  UserId: number;
+
+  @ManyToOne(() => Article, { onDelete: "CASCADE", lazy: true })
   @JoinColumn({ name: "ArticleId" })
-  ArticleId!: number;
+  Article: Article;
 
   @ManyToOne(() => User, { onDelete: "CASCADE", eager: true })
   @JoinColumn({ name: "UserId" })
-  UserId!: number;
+  User: User;
 }
