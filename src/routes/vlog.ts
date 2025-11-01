@@ -41,14 +41,11 @@ getVlogById.validationScheme = {
 const createVlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const payload = {
-      Article: {
-        Title: req.body.Article.Title,
-        Excerpt: req.body.Article.Excerpt,
-        ArticleType: "vlog",
-        Content: req.body.Article.Content,
-        Slug: req.body.Article.Slug,
-        Tags: req.body.Article.Tags,
-      } as any,
+      Title: req.body.Title,
+      Excerpt: req.body.Excerpt,
+      Content: req.body.Content,
+      Slug: req.body.Slug,
+      Tags: req.body.Tags,
       VideoFile: req.body.VideoFile,
     };
     const vlog = await vlogDao.create(payload);
@@ -59,13 +56,11 @@ const createVlog = async (req: Request, res: Response, next: NextFunction) => {
 };
 createVlog.validationScheme = {
   body: {
-    Article: Joi.object({
-      Title: Joi.string().min(1).max(200).required(), // min 5
-      Excerpt: Joi.string().min(1).max(500).required(), // min 20
-      Content: Joi.string().min(1).required(), // min 50
-      Slug: Joi.string().max(255).optional(),
-      Tags: Joi.array().items(Joi.string().max(50)).optional(),
-    }).required(),
+    Title: Joi.string().min(1).max(200).required(),
+    Excerpt: Joi.string().min(1).max(500).required(),
+    Content: Joi.string().min(1).required(),
+    Slug: Joi.string().max(255).optional(),
+    Tags: Joi.array().items(Joi.string().max(50)).optional(),
     VideoFile: Joi.object({
       VideoFileUrl: Joi.string().uri().required(),
     }).required(),
@@ -78,14 +73,11 @@ const updateVlog = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id, 10);
 
     const payload = {
-      Article: {
-        Title: req.body.Article.Title,
-        Excerpt: req.body.Article.Excerpt,
-        ArticleType: "vlog",
-        Content: req.body.Article.Content,
-        Slug: req.body.Article.Slug,
-        Tags: req.body.Article.Tags,
-      } as any,
+      Title: req.body.Title,
+      Excerpt: req.body.Excerpt,
+      Content: req.body.Content,
+      Slug: req.body.Slug,
+      Tags: req.body.Tags,
     };
 
     const vlog = await vlogDao.update(id, payload);
@@ -104,13 +96,11 @@ updateVlog.validationScheme = {
     id: Joi.number().integer().positive().required(),
   },
   body: {
-    Article: Joi.object({
-      Title: Joi.string().min(5).max(200).optional(),
-      Excerpt: Joi.string().min(20).max(500).optional(),
-      Content: Joi.string().min(50).optional(),
-      Slug: Joi.string().max(255).optional(),
-      Tags: Joi.array().items(Joi.string().max(50)).optional(),
-    }).optional(),
+    Title: Joi.string().min(5).max(200).optional(),
+    Excerpt: Joi.string().min(20).max(500).optional(),
+    Content: Joi.string().min(50).optional(),
+    Slug: Joi.string().max(255).optional(),
+    Tags: Joi.array().items(Joi.string().max(50)).optional(),
   },
 };
 

@@ -19,7 +19,6 @@ const getAllCommentsByArticleId = async (
     next(error);
   }
 };
-
 getAllCommentsByArticleId.validationScheme = {
   params: {
     articleId: Joi.number().integer().positive().required(),
@@ -33,24 +32,20 @@ const createComment = async (
 ) => {
   try {
     const payload = {
+      ArticleId: parseInt(req.params.articleId, 10),
       UserId: req.body.UserId,
       Content: req.body.Content,
     };
-    const articleId = parseInt(req.params.articleId, 10);
-
-    // Create comment
-    const comment = await commentDao.create({
-      ...payload,
-      ArticleId: articleId,
-      PublishedAt: new Date(),
-    });
+    const comment = await commentDao.create(payload);
     res.status(201).json(comment);
   } catch (error) {
     next(error);
   }
 };
-
 createComment.validationScheme = {
+  params: {
+    articleId: Joi.number().integer().positive().required(),
+  },
   body: {
     UserId: Joi.number().integer().positive().required(),
     Content: Joi.string().min(2).max(1000).required(),
@@ -78,7 +73,6 @@ const updateComment = async (
     next(error);
   }
 };
-
 updateComment.validationScheme = {
   params: {
     articleId: Joi.number().integer().positive().required(),
@@ -95,7 +89,6 @@ const deleteComment = async (
   next: NextFunction
 ) => {
   try {
-    const articleId = parseInt(req.params.articleId, 10);
     const commentId = parseInt(req.params.commentId, 10);
     const success = await commentDao.delete(commentId);
     if (!success) {
@@ -105,6 +98,12 @@ const deleteComment = async (
   } catch (error) {
     next(error);
   }
+};
+deleteComment.validationScheme = {
+  params: {
+    articleId: Joi.number().integer().positive().required(),
+    commentId: Joi.number().integer().positive().required(),
+  },
 };
 
 export default function installCommentRouter(router: Router): void {
@@ -130,5 +129,9 @@ export default function installCommentRouter(router: Router): void {
   );
 
   // DELETE comment
-  router.delete("/articles/:articleId/comments/:commentId", deleteComment);
+  router.delete(
+    "/articles/:articleId/comments/:commentId",
+    validate(deleteComment.validationScheme),
+    deleteComment
+  );
 }

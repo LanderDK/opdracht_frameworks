@@ -2,25 +2,28 @@ import { AppDataSource } from "../data-source";
 import { Vlog } from "../entity/Vlog";
 import { VideoFile } from "../entity/VideoFile";
 import * as faker from "faker";
-import { Article } from "../entity/Article";
 import { ArticleType } from "../enum/ArticleType";
 
 /**
- * Seed Vlog rows using TypeORM Class-Table Inheritance.
- * TypeORM will automatically create both Article and Vlog table rows.
+ * Seed Vlog rows using TypeORM Single Table Inheritance.
+ * TypeORM will create rows in the Article table with ArticleType='VLOG'.
  */
 export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
   const vlogRepository = AppDataSource.getRepository(Vlog);
   const videoFileRepository = AppDataSource.getRepository(VideoFile);
-  const articleRepository = AppDataSource.getRepository(Article);
+
   // Check if vlogs already exist
   const existingCount = await vlogRepository.count();
   if (existingCount > 0) {
-    console.log(`Vlogs already seeded (${existingCount} vlogs found). Skipping...`);
+    console.log(
+      `Vlogs already seeded (${existingCount} vlogs found). Skipping...`
+    );
     return await vlogRepository.find();
   }
 
-  console.log(`Creating ${ensureCount} vlog(s) with TypeORM inheritance...`);
+  console.log(
+    `Creating ${ensureCount} vlog(s) with TypeORM Single Table Inheritance...`
+  );
 
   // Ensure video files exist
   let videoFiles = await videoFileRepository.find();
@@ -32,9 +35,13 @@ export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
     for (let i = 0; i < Math.max(ensureCount, 3); i++) {
       const host = videoHosts[Math.floor(Math.random() * videoHosts.length)];
       const videoId = faker.datatype.uuid().substring(0, 11);
-      newVideoFiles.push({ VideoFileUrl: `https://www.${host}/watch?v=${videoId}` });
+      newVideoFiles.push({
+        VideoFileUrl: `https://www.${host}/watch?v=${videoId}`,
+      });
     }
-    const savedFiles = await videoFileRepository.save(newVideoFiles as VideoFile[]);
+    const savedFiles = await videoFileRepository.save(
+      newVideoFiles as VideoFile[]
+    );
     videoFiles = savedFiles;
   }
 
@@ -64,21 +71,19 @@ export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
     const publishedAt = faker.date.past(1);
     const updatedAt = faker.date.between(publishedAt, new Date());
 
-    // Create Vlog directly - TypeORM will create both Article and Vlog rows
+    // Create Vlog directly - inherits Article properties
     const vlog = new Vlog();
-    vlog.Article = new Article();
-    vlog.Article.Excerpt = faker.lorem.sentence();
-    vlog.Article.Slug = faker.helpers.slugify(faker.lorem.words(3)).toLowerCase();
-    vlog.Article.Content = faker.lorem.paragraphs(3);
-    vlog.Article.Tags = tags;
-    vlog.Article.Title = faker.lorem.sentence();
-    vlog.Article.PublishedAt = publishedAt;
-    vlog.Article.UpdatedAt = updatedAt;
-    vlog.Article.ArticleType = ArticleType.VLOG;
+    vlog.Title = faker.lorem.sentence();
+    vlog.Excerpt = faker.lorem.sentence();
+    vlog.Slug = faker.helpers.slugify(faker.lorem.words(3)).toLowerCase();
+    vlog.Content = faker.lorem.paragraphs(3);
+    vlog.Tags = tags;
+    vlog.PublishedAt = publishedAt;
+    vlog.UpdatedAt = updatedAt;
+    vlog.ArticleType = ArticleType.VLOG;
     vlog.VideoFileId = videoFiles[i % videoFiles.length].VideoFileId;
 
     vlogs.push(vlog);
-    await articleRepository.save(vlog.Article);
   }
 
   await vlogRepository.save(vlogs);

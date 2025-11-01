@@ -31,19 +31,17 @@ getBlogById.validationScheme = {
 const createBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Calculate read time based on content (average reading speed: 200 words per minute)
-    const wordCount = req.body.Article.Content.split(/\s+/).filter(
+    const wordCount = req.body.Content.split(/\s+/).filter(
       (word: string) => word.length > 0
     ).length;
     const readtimeInMinutes = Math.ceil(wordCount / 200);
 
     const payload = {
-      Article: {
-        Title: req.body.Article.Title,
-        Excerpt: req.body.Article.Excerpt,
-        Content: req.body.Article.Content,
-        Slug: req.body.Article.Slug,
-        Tags: req.body.Article.Tags,
-      } as any,
+      Title: req.body.Title,
+      Excerpt: req.body.Excerpt,
+      Content: req.body.Content,
+      Slug: req.body.Slug,
+      Tags: req.body.Tags,
       Readtime: readtimeInMinutes,
     };
     const blog = await blogDao.create(payload);
@@ -54,13 +52,11 @@ const createBlog = async (req: Request, res: Response, next: NextFunction) => {
 };
 createBlog.validationScheme = {
   body: {
-    Article: Joi.object({
-      Title: Joi.string().min(1).max(200).required(),
-      Excerpt: Joi.string().min(1).max(500).required(),
-      Content: Joi.string().min(1).required(),
-      Slug: Joi.string().max(255).required(),
-      Tags: Joi.array().items(Joi.string().max(50)).optional(),
-    }).required(),
+    Title: Joi.string().min(1).max(200).required(),
+    Excerpt: Joi.string().min(1).max(500).required(),
+    Content: Joi.string().min(1).required(),
+    Slug: Joi.string().max(255).required(),
+    Tags: Joi.array().items(Joi.string().max(50)).optional(),
   },
 };
 
@@ -70,19 +66,17 @@ const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id, 10);
 
     // Calculate read time based on content (average reading speed: 200 words per minute)
-    const wordCount = req.body.Article.Content.split(/\s+/).filter(
+    const wordCount = req.body.Content.split(/\s+/).filter(
       (word: string) => word.length > 0
     ).length;
     const readtimeInMinutes = Math.ceil(wordCount / 200);
 
     const payload = {
-      Article: {
-        Title: req.body.Article.Title,
-        Excerpt: req.body.Article.Excerpt,
-        Content: req.body.Article.Content,
-        Slug: req.body.Article.Slug,
-        Tags: req.body.Article.Tags,
-      } as any,
+      Title: req.body.Title,
+      Excerpt: req.body.Excerpt,
+      Content: req.body.Content,
+      Slug: req.body.Slug,
+      Tags: req.body.Tags,
       Readtime: readtimeInMinutes,
     };
 
@@ -102,13 +96,11 @@ updateBlog.validationScheme = {
     id: Joi.number().integer().positive().required(),
   },
   body: {
-    Article: Joi.object({
-      Title: Joi.string().min(1).max(200).required(),
-      Excerpt: Joi.string().min(1).max(500).required(),
-      Content: Joi.string().min(1).required(),
-      Slug: Joi.string().max(255).required(),
-      Tags: Joi.array().items(Joi.string().max(50)).optional(),
-    }).required(),
+    Title: Joi.string().min(1).max(200).required(),
+    Excerpt: Joi.string().min(1).max(500).required(),
+    Content: Joi.string().min(1).required(),
+    Slug: Joi.string().max(255).required(),
+    Tags: Joi.array().items(Joi.string().max(50)).optional(),
   },
 };
 
