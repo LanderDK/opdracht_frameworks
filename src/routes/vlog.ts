@@ -37,34 +37,71 @@ getVlogById.validationScheme = {
   },
 };
 
-// POST create new vlog
+// POST create new vlog(s) - single or bulk
 const createVlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const payload = {
-      Title: req.body.Title,
-      Excerpt: req.body.Excerpt,
-      Content: req.body.Content,
-      Slug: req.body.Slug,
-      Tags: req.body.Tags,
-      VideoFile: req.body.VideoFile,
-    };
-    const vlog = await vlogDao.create(payload);
-    res.status(201).json(vlog);
+    // Check if body is an array (bulk) or single object
+    const isBulk = Array.isArray(req.body);
+
+    if (isBulk) {
+      // Bulk insert
+      const vlogsData = req.body.map((vlogData: any) => ({
+        Title: vlogData.Title,
+        Excerpt: vlogData.Excerpt,
+        Content: vlogData.Content,
+        Slug: vlogData.Slug,
+        Tags: vlogData.Tags,
+        VideoFile: vlogData.VideoFile,
+      }));
+
+      const savedVlogs = await vlogDao.createBulk(vlogsData);
+      res.status(201).json(savedVlogs);
+    } else {
+      // Single insert
+      const payload = {
+        Title: req.body.Title,
+        Excerpt: req.body.Excerpt,
+        Content: req.body.Content,
+        Slug: req.body.Slug,
+        Tags: req.body.Tags,
+        VideoFile: req.body.VideoFile,
+      };
+      const vlog = await vlogDao.create(payload);
+      res.status(201).json(vlog);
+    }
   } catch (error) {
     next(error);
   }
 };
 createVlog.validationScheme = {
-  body: {
-    Title: Joi.string().min(1).max(200).required(),
-    Excerpt: Joi.string().min(1).max(500).required(),
-    Content: Joi.string().min(1).required(),
-    Slug: Joi.string().max(255).optional(),
-    Tags: Joi.array().items(Joi.string().max(50)).optional(),
-    VideoFile: Joi.object({
-      VideoFileUrl: Joi.string().uri().required(),
-    }).required(),
-  },
+  body: Joi.alternatives().try(
+    // Single vlog object
+    Joi.object({
+      Title: Joi.string().min(1).max(200).required(),
+      Excerpt: Joi.string().min(1).max(500).required(),
+      Content: Joi.string().min(1).required(),
+      Slug: Joi.string().max(255).optional(),
+      Tags: Joi.array().items(Joi.string().max(50)).optional(),
+      VideoFile: Joi.object({
+        VideoFileUrl: Joi.string().uri().required(),
+      }).required(),
+    }),
+    // Array of vlogs
+    Joi.array()
+      .items(
+        Joi.object({
+          Title: Joi.string().min(1).max(200).required(),
+          Excerpt: Joi.string().min(1).max(500).required(),
+          Content: Joi.string().min(1).required(),
+          Slug: Joi.string().max(255).optional(),
+          Tags: Joi.array().items(Joi.string().max(50)).optional(),
+          VideoFile: Joi.object({
+            VideoFileUrl: Joi.string().uri().required(),
+          }).required(),
+        })
+      )
+      .min(1)
+  ) as any, // Type assertion to work with validation middleware
 };
 
 // PUT update vlog

@@ -61,16 +61,15 @@ const validate = (schema?: ValidationSchema) => {
         querySchema = Joi.object(querySchema);
       }
 
-      const { error: queryErrors, value: queryValue } = querySchema.validate(
+      const { error: queryErrors } = querySchema.validate(
         req.query,
         JOI_OPTIONS
       );
 
       if (queryErrors) {
         errors.query = cleanupJoiError(queryErrors);
-      } else {
-        req.query = queryValue;
       }
+      // Note: req.query is read-only in Express, so we don't assign the validated value
     }
 
     // Validate request body

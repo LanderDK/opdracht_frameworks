@@ -31,6 +31,18 @@ export class BlogDAO {
     return this.repo.save(blog);
   }
 
+  async createBulk(blogsData: Partial<Blog>[]): Promise<Blog[]> {
+    const blogs = this.repo.create(
+      blogsData.map((blogData) => ({
+        ...blogData,
+        ArticleType: ArticleType.BLOG,
+        PublishedAt: blogData.PublishedAt ?? new Date(),
+        UpdatedAt: blogData.UpdatedAt ?? new Date(),
+      }))
+    );
+    return this.repo.save(blogs);
+  }
+
   async update(id: number, patch: Partial<Blog>): Promise<Blog | null> {
     const blog = await this.repo.findOne({ where: { ArticleId: id } });
 

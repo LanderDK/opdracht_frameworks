@@ -27,37 +27,77 @@ getBlogById.validationScheme = {
   },
 };
 
-// POST create new blog
+// POST create new blog(s) - single or bulk
 const createBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Calculate read time based on content (average reading speed: 200 words per minute)
-    const wordCount = req.body.Content.split(/\s+/).filter(
-      (word: string) => word.length > 0
-    ).length;
-    const readtimeInMinutes = Math.ceil(wordCount / 200);
+    // Check if body is an array (bulk) or single object
+    const isBulk = Array.isArray(req.body);
 
-    const payload = {
-      Title: req.body.Title,
-      Excerpt: req.body.Excerpt,
-      Content: req.body.Content,
-      Slug: req.body.Slug,
-      Tags: req.body.Tags,
-      Readtime: readtimeInMinutes,
-    };
-    const blog = await blogDao.create(payload);
-    res.status(201).json(blog);
+    if (isBulk) {
+      // Bulk insert
+      const blogsData = req.body.map((blogData: any) => {
+        const wordCount = blogData.Content.split(/\s+/).filter(
+          (word: string) => word.length > 0
+        ).length;
+        const readtimeInMinutes = Math.ceil(wordCount / 200);
+
+        return {
+          Title: blogData.Title,
+          Excerpt: blogData.Excerpt,
+          Content: blogData.Content,
+          Slug: blogData.Slug,
+          Tags: blogData.Tags || [],
+          Readtime: readtimeInMinutes,
+        };
+      });
+
+      const savedBlogs = await blogDao.createBulk(blogsData);
+      res.status(201).json(savedBlogs);
+    } else {
+      // Single insert
+      const wordCount = req.body.Content.split(/\s+/).filter(
+        (word: string) => word.length > 0
+      ).length;
+      const readtimeInMinutes = Math.ceil(wordCount / 200);
+
+      const payload = {
+        Title: req.body.Title,
+        Excerpt: req.body.Excerpt,
+        Content: req.body.Content,
+        Slug: req.body.Slug,
+        Tags: req.body.Tags,
+        Readtime: readtimeInMinutes,
+      };
+      const blog = await blogDao.create(payload);
+      res.status(201).json(blog);
+    }
   } catch (error) {
     next(error);
   }
 };
 createBlog.validationScheme = {
-  body: {
-    Title: Joi.string().min(1).max(200).required(),
-    Excerpt: Joi.string().min(1).max(500).required(),
-    Content: Joi.string().min(1).required(),
-    Slug: Joi.string().max(255).required(),
-    Tags: Joi.array().items(Joi.string().max(50)).optional(),
-  },
+  body: Joi.alternatives().try(
+    // Single blog object
+    Joi.object({
+      Title: Joi.string().min(1).max(200).required(),
+      Excerpt: Joi.string().min(1).max(500).required(),
+      Content: Joi.string().min(1).required(),
+      Slug: Joi.string().max(255).required(),
+      Tags: Joi.array().items(Joi.string().max(50)).optional(),
+    }),
+    // Array of blogs
+    Joi.array()
+      .items(
+        Joi.object({
+          Title: Joi.string().min(1).max(200).required(),
+          Excerpt: Joi.string().min(1).max(500).required(),
+          Content: Joi.string().min(1).required(),
+          Slug: Joi.string().max(255).required(),
+          Tags: Joi.array().items(Joi.string().max(50)).optional(),
+        })
+      )
+      .min(1)
+  ) as any, // Type assertion to work with validation middleware
 };
 
 // PUT update blog
@@ -139,7 +179,7 @@ export default function installBlogRouter(router: Router): void {
   router.get("/blogs", getAllBlogs);
   router.get("/blogs/:id", validate(getBlogById.validationScheme), getBlogById);
 
-  // POST routes
+  // POST routes - handles both single and bulk creation
   router.post("/blogs", validate(createBlog.validationScheme), createBlog);
 
   // PUT routes

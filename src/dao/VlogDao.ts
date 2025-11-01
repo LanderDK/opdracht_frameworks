@@ -75,4 +75,32 @@ export class VlogDAO {
     const result = await this.repoVlog.delete({ ArticleId: id });
     return result.affected !== 0;
   }
+
+  async createBulk(
+    payloads: Array<Partial<Vlog> & { VideoFile?: Partial<VideoFile> }>
+  ): Promise<Vlog[]> {
+    const vlogs: Vlog[] = [];
+
+    for (const payload of payloads) {
+      // Create and save VideoFile first
+      const videoFile = this.repoVideoFile.create(payload.VideoFile);
+      const savedVideoFile = await this.repoVideoFile.save(videoFile);
+
+      // Remove VideoFile from payload before creating vlog
+      const { VideoFile: _, ...vlogData } = payload;
+
+      // Create Vlog with Article properties (inherited) and VideoFileId
+      const vlog = this.repoVlog.create({
+        ...vlogData,
+        ArticleType: ArticleType.VLOG,
+        PublishedAt: vlogData.PublishedAt ?? new Date(),
+        UpdatedAt: vlogData.UpdatedAt ?? new Date(),
+        VideoFileId: savedVideoFile.VideoFileId,
+      });
+
+      vlogs.push(vlog);
+    }
+
+    return this.repoVlog.save(vlogs);
+  }
 }
