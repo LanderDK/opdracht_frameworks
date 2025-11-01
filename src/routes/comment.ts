@@ -12,7 +12,7 @@ const getAllCommentsByArticleId = async (
   next: NextFunction
 ) => {
   try {
-    const articleId = parseInt(req.params.articleId, 10); 
+    const articleId = parseInt(req.params.articleId, 10);
     const comments = await commentDao.findAllByArticleId(articleId);
     res.json(comments);
   } catch (error) {
@@ -26,7 +26,7 @@ getAllCommentsByArticleId.validationScheme = {
   },
 };
 
-const createComment = async(
+const createComment = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -35,18 +35,15 @@ const createComment = async(
     const payload = {
       UserId: req.body.UserId,
       Content: req.body.Content,
-    }
+    };
     const articleId = parseInt(req.params.articleId, 10);
 
     // Create comment
-    const comment = await commentDao.create(
-      
-      {
-        ...payload,
-        ArticleId: articleId,
-        PublishedAt: new Date(),
-      }
-    );
+    const comment = await commentDao.create({
+      ...payload,
+      ArticleId: articleId,
+      PublishedAt: new Date(),
+    });
     res.status(201).json(comment);
   } catch (error) {
     next(error);
@@ -54,14 +51,13 @@ const createComment = async(
 };
 
 createComment.validationScheme = {
-  body:{
+  body: {
     UserId: Joi.number().integer().positive().required(),
     Content: Joi.string().min(2).max(1000).required(),
   },
 };
 
-
-const updateComment = async(
+const updateComment = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -93,7 +89,7 @@ updateComment.validationScheme = {
   },
 };
 
-const deleteComment = async(
+const deleteComment = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -112,7 +108,7 @@ const deleteComment = async(
 };
 
 export default function installCommentRouter(router: Router): void {
-// GET comment by articleId
+  // GET comment by articleId
   router.get(
     "/articles/:articleId/comments",
     validate(getAllCommentsByArticleId.validationScheme),
@@ -122,8 +118,10 @@ export default function installCommentRouter(router: Router): void {
   // POST create comment for articleId
   router.post(
     "/articles/:articleId/comments",
-    validate(createComment.validationScheme), createComment);
-  
+    validate(createComment.validationScheme),
+    createComment
+  );
+
   // PUT update comment
   router.put(
     "/articles/:articleId/comments/:commentId",
@@ -132,11 +130,5 @@ export default function installCommentRouter(router: Router): void {
   );
 
   // DELETE comment
-  router.delete(
-    "/articles/:articleId/comments/:commentId",
-    deleteComment
-  );
-
-
-
+  router.delete("/articles/:articleId/comments/:commentId", deleteComment);
 }

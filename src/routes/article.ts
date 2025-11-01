@@ -19,7 +19,7 @@ const getAllArticles = async (
   }
 };
 
-const getArticleById = async(
+const getArticleById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -46,5 +46,9 @@ getArticleById.validationScheme = {
 export default function installArticleRouter(router: Router): void {
   // GET routes
   router.get("/articles", getAllArticles);
-  router.get("/articles/:id", validate(getArticleById.validationScheme), getArticleById);
+  router.get(
+    "/articles/:id",
+    validate(getArticleById.validationScheme),
+    getArticleById
+  );
 }

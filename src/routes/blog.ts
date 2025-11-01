@@ -31,9 +31,9 @@ getBlogById.validationScheme = {
 const createBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // Calculate read time based on content (average reading speed: 200 words per minute)
-    const wordCount = req.body.Article.Content
-      .split(/\s+/)
-      .filter((word: string) => word.length > 0).length;
+    const wordCount = req.body.Article.Content.split(/\s+/).filter(
+      (word: string) => word.length > 0
+    ).length;
     const readtimeInMinutes = Math.ceil(wordCount / 200);
 
     const payload = {
@@ -61,7 +61,7 @@ createBlog.validationScheme = {
       Slug: Joi.string().max(255).required(),
       Tags: Joi.array().items(Joi.string().max(50)).optional(),
     }).required(),
-  }
+  },
 };
 
 // PUT update blog
@@ -70,9 +70,9 @@ const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id, 10);
 
     // Calculate read time based on content (average reading speed: 200 words per minute)
-    const wordCount = req.body.Article.Content
-      .split(/\s+/)
-      .filter((word: string) => word.length > 0).length;
+    const wordCount = req.body.Article.Content.split(/\s+/).filter(
+      (word: string) => word.length > 0
+    ).length;
     const readtimeInMinutes = Math.ceil(wordCount / 200);
 
     const payload = {
@@ -109,7 +109,7 @@ updateBlog.validationScheme = {
       Slug: Joi.string().max(255).required(),
       Tags: Joi.array().items(Joi.string().max(50)).optional(),
     }).required(),
-  }
+  },
 };
 
 // DELETE blog
@@ -133,11 +133,7 @@ deleteBlog.validationScheme = {
   },
 };
 
-const getAllBlogs = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const getAllBlogs = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const blogs = await blogDao.findAll();
     res.json(blogs);

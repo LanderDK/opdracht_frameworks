@@ -4,10 +4,7 @@ import Joi from "joi";
 import validate from "../core/validation";
 import ServiceError from "../core/serviceError";
 
-
-
 const userDao = new UserDAO();
-
 
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -68,7 +65,7 @@ updateUser.validationScheme = {
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const success = await userDao.delete(id); 
+    const success = await userDao.delete(id);
     if (!success) {
       throw ServiceError.notFound("User not found", { id });
     }
@@ -84,27 +81,14 @@ deleteUser.validationScheme = {
 };
 
 export default function installUserRouter(router: Router): void {
-
   // GET routes
-  router.get(
-    "/users/:id",
-    validate(getUserById.validationScheme),
-    getUserById
-  );
+  router.get("/users/:id", validate(getUserById.validationScheme), getUserById);
 
   // POST routes
-  router.post(
-    "/users",
-    validate(createUser.validationScheme),
-    createUser
-  );
+  router.post("/users", validate(createUser.validationScheme), createUser);
 
   // PUT routes
-  router.put(
-    "/users/:id",
-    validate(updateUser.validationScheme),
-    updateUser
-  );
+  router.put("/users/:id", validate(updateUser.validationScheme), updateUser);
 
   // DELETE routes
   router.delete(
@@ -112,5 +96,4 @@ export default function installUserRouter(router: Router): void {
     validate(deleteUser.validationScheme),
     deleteUser
   );
-
 }

@@ -1,7 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  TableInheritance,
+} from "typeorm";
 import { ArticleType } from "../enum/ArticleType";
 
 @Entity()
+@TableInheritance({ column: { type: "varchar", name: "ArticleType" } })
 export class Article {
   @PrimaryGeneratedColumn()
   ArticleId: number;
