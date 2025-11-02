@@ -1,0 +1,40 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        title= `${statusCode || 500} - ${code || 'Error'}`
+        link(rel="stylesheet" href="/css/error.css")
+
+    body
+        .error-container
+            .error-header
+                .error-code= statusCode || 500
+                .error-type= code || 'ERROR'
+                .error-message= message || 'An unexpected error occurred'
+
+            .error-body
+                if details && Object.keys(details).length > 0
+                    .section
+                        .section-title Error Details
+                        .details-grid
+                            each value, key in details
+                                .detail-item
+                                    .detail-label= key
+                                    .detail-value= JSON.stringify(value, null, 2)
+
+                if url
+                    .section
+                        .section-title Request Information
+                        .details-grid
+                            .detail-item
+                                .detail-label Requested URL
+                                .detail-value= url
+
+                if stack
+                    .section
+                        .section-title Stack Trace
+                        .stack-trace= stack
+
+                .timestamp
+                    | Error occurred at #{new Date().toLocaleString()}

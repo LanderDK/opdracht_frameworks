@@ -3,6 +3,7 @@ import { ArticleDAO } from "../dao/ArticleDao";
 import { ServiceError } from "../core/serviceError";
 import Joi from "joi";
 import validate from "../core/validation";
+import { Article } from "../data/entity/Article";
 
 const articleDao = new ArticleDAO();
 
@@ -15,7 +16,7 @@ const getAllArticles = async (
   try {
     const tag = req.query.tag as string | undefined;
 
-    let articles;
+    let articles: Article[];
     if (tag) {
       // Filter by tag using QueryBuilder
       articles = await articleDao.findByTag(tag);

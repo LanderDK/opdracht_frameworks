@@ -6,6 +6,7 @@ import { initializeLogger, getLogger } from "./core/logging";
 import { ServiceError } from "./core/serviceError";
 import * as emoji from "node-emoji";
 import { initializeData, shutdownData } from "./data";
+import path from "path";
 
 // Configuration
 const NODE_ENV = process.env.NODE_ENV;
@@ -53,9 +54,15 @@ export default async function createServer() {
     })
   );
 
+  // view engine setup
+  app.set("views", path.join(__dirname, "views"));
+  app.set("view engine", "pug");
+
   // Body parsing middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  app.use(express.static(path.join(__dirname, "public")));
 
   // Request logging middleware
   app.use((req: Request, res: Response, next: NextFunction) => {
@@ -85,9 +92,13 @@ export default async function createServer() {
 
   // 404 handler - must be after all routes
   app.use((req: Request, res: Response, next: NextFunction) => {
-    res.status(404).json({
+    res.status(404).render("error", {
+      statusCode: 404,
       code: "NOT_FOUND",
       message: `Unknown resource: ${req.url}`,
+      url: req.url,
+      details: {},
+      stack: undefined,
     });
   });
 
@@ -103,19 +114,23 @@ export default async function createServer() {
 
     let statusCode = error.statusCode || error.status || 500;
     let errorBody: any = {
+      statusCode: statusCode,
       code: error.code || "INTERNAL_SERVER_ERROR",
       message: error.message,
       details: error.details || {},
       stack: NODE_ENV !== "production" ? error.stack : undefined,
+      url: req.url,
     };
 
     if (error instanceof ServiceError) {
       statusCode = error.statusCode;
+      errorBody.statusCode = statusCode;
     }
 
     // Handle JWT errors (if you're using JWT)
     if ((req as any).jwtOriginalError) {
       statusCode = 401;
+      errorBody.statusCode = 401;
       errorBody.code = "UNAUTHORIZED";
       errorBody.message = (req as any).jwtOriginalError.message;
       errorBody.details.jwtOriginalError = {
@@ -123,7 +138,17 @@ export default async function createServer() {
       };
     }
 
-    res.status(statusCode).json(errorBody);
+    // Check if request accepts HTML (browser) or JSON (API client)
+    if (req.accepts("html")) {
+      res.status(statusCode).render("error", errorBody);
+    } else {
+      // Remove stack and url for JSON response
+      const { stack, url, ...jsonBody } = errorBody;
+      res.status(statusCode).json({
+        ...jsonBody,
+        stack: stack, // Keep stack in JSON for debugging
+      });
+    }
   });
 
   return {

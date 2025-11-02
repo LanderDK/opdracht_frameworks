@@ -21,6 +21,7 @@
     "joi": "^18.0.1",
     "mysql2": "^3.14.0",
     "node-emoji": "^2.2.0",
+    "pug": "^3.0.3",
     "reflect-metadata": "^0.2.2",
     "typeorm": "0.3.27",
     "winston": "^3.18.3"
