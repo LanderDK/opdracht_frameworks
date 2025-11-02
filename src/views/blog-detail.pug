@@ -1,0 +1,30 @@
+extends layout
+
+block content
+    #blog-detail
+        .loading Loading blog...
+    
+    .comments-section
+        h2 Comments
+            span#comment-count.count
+        
+        .comment-form-container
+            h3 Add a Comment
+            form#comment-form
+                .form-group
+                    label(for="userId") User ID
+                    input#userId(type="number" name="userId" placeholder="Enter your user ID" required min="1")
+                
+                .form-group
+                    label(for="content") Comment
+                    textarea#content(name="content" placeholder="Write your comment here..." required rows="4")
+                
+                button.btn.btn-primary(type="submit") Post Comment
+        
+        #comments-container
+            .loading Loading comments...
+
+block scripts
+    script.
+        const ARTICLE_ID = !{blogId};
+    script(src="/js/blog-detail.js")
