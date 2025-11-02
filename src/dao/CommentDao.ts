@@ -24,7 +24,14 @@ export class CommentDAO {
       ...payload,
       PublishedAt: new Date(),
     });
-    return this.repo.save(comment);
+    const savedComment = await this.repo.save(comment);
+
+    // Fetch the comment with User relation (eager loaded)
+    const commentWithUser = await this.repo.findOne({
+      where: { CommentId: savedComment.CommentId },
+    });
+
+    return commentWithUser!;
   }
 
   async update(id: number, patch: Partial<Comment>): Promise<Comment | null> {

@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    .page-header
+        h1 All Articles
+        p Discover our latest blogs and vlogs
+
+    .filter-section
+        .filter-container
+            label(for="tag-filter") Filter by Tag
+            input#tag-filter(type="text" placeholder="Enter a tag to filter..." autocomplete="off")
+            button#clear-filter.btn.btn-secondary Clear Filter
+
+    .articles-grid#articles-container
+        .loading Loading articles...
+
+block scripts
+    script(src="/js/index.js")

@@ -1,12 +1,15 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
-import { Server } from "http";
+import { Server as HttpServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
 import { installRestRoutes } from "./routes";
+import viewRoutes from "./routes/views";
 import { initializeLogger, getLogger } from "./core/logging";
 import { ServiceError } from "./core/serviceError";
 import * as emoji from "node-emoji";
 import { initializeData, shutdownData } from "./data";
 import path from "path";
+import { initializeWebSocket } from "./socket";
 
 // Configuration
 const NODE_ENV = process.env.NODE_ENV;
@@ -31,7 +34,8 @@ export default async function createServer() {
   await initializeData();
 
   const app: Application = express();
-  let server: Server | null = null;
+  let server: HttpServer | null = null;
+  let io: SocketIOServer | null = null;
 
   // CORS configuration
   app.use(
@@ -86,6 +90,9 @@ export default async function createServer() {
 
     next();
   });
+
+  // Install view routes (before API routes)
+  app.use("/", viewRoutes);
 
   // Install REST routes
   installRestRoutes(app);
@@ -156,12 +163,29 @@ export default async function createServer() {
       return app;
     },
 
+    getIO(): SocketIOServer | null {
+      return io;
+    },
+
     start(): Promise<void> {
       return new Promise((resolve) => {
-        server = app.listen(PORT, () => {
+        const httpServer = app.listen(PORT, () => {
           logger.info(`🚀 Server listening on http://localhost:${PORT}`);
           resolve();
         });
+        server = httpServer;
+
+        // Initialize Socket.IO
+        io = new SocketIOServer(httpServer, {
+          cors: {
+            origin: CORS_ORIGINS || "*",
+            methods: ["GET", "POST"],
+          },
+        });
+
+        // Initialize WebSocket handlers
+        initializeWebSocket(io);
+        logger.info("✅ WebSocket initialized");
       });
     },
 
