@@ -1,4 +1,6 @@
-export enum ArticleType {
+enum ArticleType {
   BLOG = "blog",
-  VLOG = "vlog"
+  VLOG = "vlog",
 }
+
+export default ArticleType;

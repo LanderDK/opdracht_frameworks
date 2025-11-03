@@ -2,7 +2,7 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { Server as HttpServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
-import { installRestRoutes } from "./routes";
+import installRestRoutes from "./routes";
 import installViewRoutes from "./routes/views";
 import { initializeLogger, getLogger } from "./core/logging";
 import { ServiceError } from "./core/serviceError";

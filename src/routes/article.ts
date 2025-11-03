@@ -1,9 +1,9 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { ArticleDAO } from "../dao/ArticleDao";
+import ArticleDAO from "../dao/ArticleDao";
 import { ServiceError } from "../core/serviceError";
 import Joi from "joi";
 import validate from "../core/validation";
-import { Article } from "../data/entity/Article";
+import Article from "../data/entity/Article";
 
 const articleDao = new ArticleDAO();
 

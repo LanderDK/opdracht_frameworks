@@ -1,14 +1,16 @@
-import { AppDataSource } from "../data-source";
-import { Vlog } from "../entity/Vlog";
-import { VideoFile } from "../entity/VideoFile";
+import AppDataSource from "../data-source";
+import Vlog from "../entity/Vlog";
+import VideoFile from "../entity/VideoFile";
 import * as faker from "faker";
-import { ArticleType } from "../enum/ArticleType";
+import ArticleType from "../enum/ArticleType";
 
 /**
  * Seed Vlog rows using TypeORM Single Table Inheritance.
  * TypeORM will create rows in the Article table with ArticleType='VLOG'.
  */
-export async function seedVlogs(ensureCount: number = 5): Promise<Vlog[]> {
+export default async function seedVlogs(
+  ensureCount: number = 5
+): Promise<Vlog[]> {
   const vlogRepository = AppDataSource.getRepository(Vlog);
   const videoFileRepository = AppDataSource.getRepository(VideoFile);
 

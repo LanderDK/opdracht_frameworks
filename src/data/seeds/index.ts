@@ -1,11 +1,11 @@
 import "reflect-metadata";
-import { AppDataSource } from "../data-source";
-import { seedUsers } from "./seedUser";
-import { seedBlogs } from "./seedBlog";
-import { seedVideoFiles } from "./seedVideoFile";
-import { seedVlogs } from "./seedVlog";
-import { seedComments } from "./seedComment";
-import { seedUserArticles } from "./seedUserArticle";
+import AppDataSource from "../data-source";
+import seedUsers from "./seedUser";
+import seedBlogs from "./seedBlog";
+import seedVideoFiles from "./seedVideoFile";
+import seedVlogs from "./seedVlog";
+import seedComments from "./seedComment";
+import seedUserArticles from "./seedUserArticle";
 
 async function clearDatabase() {
   console.log("🗑️  Clearing database...\n");
@@ -25,7 +25,7 @@ async function clearDatabase() {
   }
 }
 
-export async function runSeeds() {
+async function runSeeds() {
   try {
     console.log("🌱 Starting database seeding...\n");
 

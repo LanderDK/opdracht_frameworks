@@ -1,8 +1,8 @@
-import { AppDataSource } from "../data-source";
-import { Article } from "../entity/Article";
+import AppDataSource from "../data-source";
+import Article from "../entity/Article";
 import * as faker from "faker";
 
-export async function seedArticles(count: number = 20): Promise<Article[]> {
+export default async function seedArticles(count: number = 20): Promise<Article[]> {
   const articleRepository = AppDataSource.getRepository(Article);
 
   // Check if articles already exist

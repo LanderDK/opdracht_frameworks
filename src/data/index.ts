@@ -1,4 +1,4 @@
-import { AppDataSource } from "./data-source";
+import AppDataSource from "./data-source";
 import { getLogger } from "../core/logging";
 
 // Initialize TypeORM DataSource

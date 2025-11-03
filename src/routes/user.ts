@@ -1,4 +1,4 @@
-import { UserDAO } from "../dao/UserDao";
+import UserDAO from "../dao/UserDao";
 import { Router, Request, Response, NextFunction } from "express";
 import Joi from "joi";
 import validate from "../core/validation";

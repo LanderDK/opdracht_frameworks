@@ -1,8 +1,8 @@
 import { Repository, FindManyOptions } from "typeorm";
-import { AppDataSource } from "../data/data-source";
-import { User } from "../data/entity/User";
+import AppDataSource from "../data/data-source";
+import User from "../data/entity/User";
 
-export class UserDAO {
+export default class UserDAO {
   protected repo: Repository<User>;
 
   constructor(protected ds = AppDataSource) {

@@ -5,7 +5,7 @@ import installVlogRouter from "./vlog";
 import installCommentRouter from "./comment";
 import installUserRouter from "./user";
 
-export function installRestRoutes(app: Application): void {
+export default function installRestRoutes(app: Application): void {
   // Create a single router with /api prefix
   const router = Router();
 

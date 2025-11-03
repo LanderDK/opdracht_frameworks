@@ -1,8 +1,8 @@
-import { AppDataSource } from "../data-source";
-import { User } from "../entity/User";
+import AppDataSource from "../data-source";
+import User from "../entity/User";
 import * as faker from "faker";
 
-export async function seedUsers(count: number = 10): Promise<User[]> {
+export default async function seedUsers(count: number = 10): Promise<User[]> {
   const userRepository = AppDataSource.getRepository(User);
 
   // Check if users already exist

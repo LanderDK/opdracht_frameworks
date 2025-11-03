@@ -1,10 +1,10 @@
 import { Router, Request, Response, NextFunction, Application } from "express";
-import { ArticleDAO } from "../dao/ArticleDao";
-import { BlogDAO } from "../dao/BlogDao";
-import { VlogDAO } from "../dao/VlogDao";
-import { CommentDAO } from "../dao/CommentDao";
+import ArticleDAO from "../dao/ArticleDao";
+import BlogDAO from "../dao/BlogDao";
+import VlogDAO from "../dao/VlogDao";
+import CommentDAO from "../dao/CommentDao";
 import { ServiceError } from "../core/serviceError";
-import { Article } from "../data/entity/Article";
+import Article from "../data/entity/Article";
 import validate from "../core/validation";
 import Joi from "joi";
 
@@ -47,10 +47,10 @@ const blogDetail = async (req: Request, res: Response, next: NextFunction) => {
     if (!blog) {
       throw ServiceError.notFound("Blog not found", { id });
     }
-    
+
     // Load comments for this article
     const comments = await commentDao.findAllByArticleId(id);
-    
+
     res.render("blog-detail", {
       title: `Blog Detail - ${blog.Title}`,
       blog: blog,
@@ -74,10 +74,10 @@ const vlogDetail = async (req: Request, res: Response, next: NextFunction) => {
     if (!vlog) {
       throw ServiceError.notFound("Vlog not found", { id });
     }
-    
+
     // Load comments for this article
     const comments = await commentDao.findAllByArticleId(id);
-    
+
     res.render("vlog-detail", {
       title: `Vlog Detail - ${vlog.Title}`,
       vlog: vlog,

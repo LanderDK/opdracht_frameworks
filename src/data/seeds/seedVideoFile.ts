@@ -1,8 +1,8 @@
-import { AppDataSource } from "../data-source";
-import { VideoFile } from "../entity/VideoFile";
+import AppDataSource from "../data-source";
+import VideoFile from "../entity/VideoFile";
 import * as faker from "faker";
 
-export async function seedVideoFiles(count: number = 10): Promise<VideoFile[]> {
+export default async function seedVideoFiles(count: number = 10): Promise<VideoFile[]> {
   const videoFileRepository = AppDataSource.getRepository(VideoFile);
 
   // Check if video files already exist

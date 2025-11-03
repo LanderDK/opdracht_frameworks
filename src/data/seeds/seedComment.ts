@@ -1,10 +1,10 @@
-import { AppDataSource } from "../data-source";
-import { Comment } from "../entity/Comment";
-import { User } from "../entity/User";
-import { Article } from "../entity/Article";
+import AppDataSource from "../data-source";
+import Comment from "../entity/Comment";
+import User from "../entity/User";
+import Article from "../entity/Article";
 import * as faker from "faker";
 
-export async function seedComments(count: number = 50): Promise<Comment[]> {
+export default async function seedComments(count: number = 50): Promise<Comment[]> {
   const commentRepository = AppDataSource.getRepository(Comment);
   const userRepository = AppDataSource.getRepository(User);
   const articleRepository = AppDataSource.getRepository(Article);

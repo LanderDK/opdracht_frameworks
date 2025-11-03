@@ -5,11 +5,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Article } from "./Article";
-import { User } from "./User";
+import Article from "./Article";
+import User from "./User";
 
 @Entity()
-export class Comment {
+export default class Comment {
   @PrimaryGeneratedColumn()
   CommentId: number;
 

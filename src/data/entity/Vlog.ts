@@ -1,9 +1,9 @@
 import { ChildEntity, Column, JoinColumn, OneToOne } from "typeorm";
-import { Article } from "./Article";
-import { VideoFile } from "./VideoFile";
+import Article from "./Article";
+import VideoFile from "./VideoFile";
 
 @ChildEntity()
-export class Vlog extends Article {
+export default class Vlog extends Article {
   @Column()
   VideoFileId: number;
 

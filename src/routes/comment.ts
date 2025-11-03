@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { CommentDAO } from "../dao/CommentDao";
+import CommentDAO from "../dao/CommentDao";
 import Joi from "joi";
 import validate from "../core/validation";
 import ServiceError from "../core/serviceError";

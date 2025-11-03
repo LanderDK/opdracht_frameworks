@@ -5,11 +5,11 @@ import {
   ManyToOne,
   PrimaryColumn,
 } from "typeorm";
-import { User } from "./User";
-import { Article } from "./Article";
+import User from "./User";
+import Article from "./Article";
 
 @Entity()
-export class UserArticle {
+export default class UserArticle {
   @PrimaryColumn()
   ArticleId: number;
 

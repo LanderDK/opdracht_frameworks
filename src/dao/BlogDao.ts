@@ -1,9 +1,9 @@
-import { AppDataSource } from "../data/data-source";
-import { Blog } from "../data/entity/Blog";
+import AppDataSource from "../data/data-source";
+import Blog from "../data/entity/Blog";
 import { FindManyOptions, Repository } from "typeorm";
-import { ArticleType } from "../data/enum/ArticleType";
+import ArticleType from "../data/enum/ArticleType";
 
-export class BlogDAO {
+export default class BlogDAO {
   protected repo: Repository<Blog>;
 
   constructor(protected ds = AppDataSource) {

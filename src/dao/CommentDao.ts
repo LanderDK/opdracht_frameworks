@@ -1,8 +1,8 @@
 import { Repository, FindManyOptions } from "typeorm";
-import { AppDataSource } from "../data/data-source";
-import { Comment } from "../data/entity/Comment";
+import AppDataSource from "../data/data-source";
+import Comment from "../data/entity/Comment";
 
-export class CommentDAO {
+export default class CommentDAO {
   protected repo: Repository<Comment>;
 
   constructor(protected ds = AppDataSource) {

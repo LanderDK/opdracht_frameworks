@@ -1,14 +1,14 @@
-import { AppDataSource } from "../data-source";
-import { Blog } from "../entity/Blog";
+import AppDataSource from "../data-source";
+import Blog from "../entity/Blog";
 import * as faker from "faker";
-import { ArticleType } from "../enum/ArticleType";
+import ArticleType from "../enum/ArticleType";
 
 /**
  * Seed Blog rows using TypeORM Single Table Inheritance.
  * TypeORM will create rows in the Article table with ArticleType='BLOG'.
  * @param ensureCount how many blogs to create (defaults to 5)
  */
-export async function seedBlogs(ensureCount: number = 5): Promise<Blog[]> {
+export default async function seedBlogs(ensureCount: number = 5): Promise<Blog[]> {
   const blogRepository = AppDataSource.getRepository(Blog);
 
   // Check if blogs already exist

@@ -1,9 +1,9 @@
-import { AppDataSource } from "../data-source";
-import { UserArticle } from "../entity/UserArticle";
-import { User } from "../entity/User";
-import { Article } from "../entity/Article";
+import AppDataSource from "../data-source";
+import UserArticle from "../entity/UserArticle";
+import User from "../entity/User";
+import Article from "../entity/Article";
 
-export async function seedUserArticles(
+export default async function seedUserArticles(
   count: number = 30
 ): Promise<UserArticle[]> {
   const userArticleRepository = AppDataSource.getRepository(UserArticle);

@@ -1,9 +1,9 @@
-import { AppDataSource } from "../data/data-source";
-import { VideoFile } from "../data/entity/VideoFile";
-import { Vlog } from "../data/entity/Vlog";
-import { ArticleType } from "../data/enum/ArticleType";
+import AppDataSource from "../data/data-source";
+import VideoFile from "../data/entity/VideoFile";
+import Vlog from "../data/entity/Vlog";
+import ArticleType from "../data/enum/ArticleType";
 
-export class VlogDAO {
+export default class VlogDAO {
   protected repoVlog = this.ds.getRepository(Vlog);
   protected repoVideoFile = this.ds.getRepository(VideoFile);
 

@@ -1,8 +1,8 @@
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Vlog } from "./Vlog";
+import Vlog from "./Vlog";
 
 @Entity()
-export class VideoFile {
+export default class VideoFile {
   @PrimaryGeneratedColumn()
   VideoFileId: number;
 
