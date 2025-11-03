@@ -97,7 +97,7 @@ const options: swaggerJsdoc.Options = {
         },
         BlogInput: {
           type: "object",
-          required: ["Title", "Content", "Excerpt", "Tags"],
+          required: ["Title", "Excerpt", "Content", "Slug"],
           properties: {
             Title: {
               type: "string",
@@ -106,18 +106,24 @@ const options: swaggerJsdoc.Options = {
               description: "Blog title",
               example: "Getting Started with TypeORM",
             },
-            Content: {
-              type: "string",
-              minLength: 10,
-              description: "Blog content",
-              example: "TypeORM is a powerful ORM for TypeScript...",
-            },
             Excerpt: {
               type: "string",
               minLength: 5,
               maxLength: 500,
               description: "Short excerpt",
               example: "Learn the basics of TypeORM",
+            },
+            Content: {
+              type: "string",
+              minLength: 10,
+              description: "Blog content",
+              example: "TypeORM is a powerful ORM for TypeScript...",
+            },
+            Slug: {
+              type: "string",
+              maxLength: 255,
+              description: "URL slug",
+              example: "getting-started-with-typeorm",
             },
             Tags: {
               type: "array",
@@ -127,12 +133,6 @@ const options: swaggerJsdoc.Options = {
               minItems: 1,
               description: "Blog tags",
               example: ["typescript", "database", "orm"],
-            },
-            Readtime: {
-              type: "integer",
-              minimum: 1,
-              description: "Estimated reading time in minutes",
-              example: 5,
             },
           },
         },
@@ -151,7 +151,7 @@ const options: swaggerJsdoc.Options = {
         },
         VlogInput: {
           type: "object",
-          required: ["Title", "Content", "Excerpt", "Tags", "VideoFile"],
+          required: ["Title", "Content", "Excerpt", "Slug", "VideoFile"],
           properties: {
             Title: {
               type: "string",

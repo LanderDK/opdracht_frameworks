@@ -34,16 +34,25 @@ export default class CommentDAO {
     return commentWithUser!;
   }
 
-  async update(id: number, patch: Partial<Comment>): Promise<Comment | null> {
-    const comment = await this.repo.findOne({ where: { CommentId: id } });
+  async update(
+    id: number,
+    articleId: number,
+    patch: Partial<Comment>
+  ): Promise<Comment | null> {
+    const comment = await this.repo.findOne({
+      where: { CommentId: id, ArticleId: articleId },
+    });
     if (!comment) return null;
 
     Object.assign(comment, patch);
     return this.repo.save(comment);
   }
 
-  async delete(id: number): Promise<boolean> {
-    const result = await this.repo.delete({ CommentId: id });
+  async delete(id: number, articleId: number): Promise<boolean> {
+    const result = await this.repo.delete({
+      CommentId: id,
+      ArticleId: articleId,
+    });
     return result.affected !== 0;
   }
 }

@@ -1,10 +1,12 @@
 import { Router, Request, Response, NextFunction } from "express";
 import CommentDAO from "../dao/CommentDao";
+import ArticleDAO from "../dao/ArticleDao";
 import Joi from "joi";
 import validate from "../core/validation";
 import ServiceError from "../core/serviceError";
 
 const commentDao = new CommentDAO();
+const articleDao = new ArticleDAO();
 
 /**
  * @openapi
@@ -110,6 +112,14 @@ const createComment = async (
       UserId: req.body.UserId,
       Content: req.body.Content,
     };
+
+    const article = await articleDao.findById(payload.ArticleId);
+    if (!article) {
+      throw ServiceError.notFound("Article not found", {
+        articleId: payload.ArticleId,
+      });
+    }
+
     const comment = await commentDao.create(payload);
     res.status(201).json(comment);
   } catch (error) {
@@ -187,7 +197,17 @@ const updateComment = async (
       Content: req.body.Content,
       articleId: articleId,
     };
-    const comment = await commentDao.update(commentId, payload);
+
+    const article = await articleDao.findById(articleId);
+    if (!article) {
+      throw ServiceError.notFound("Article not found", { articleId });
+    }
+
+    const comment = await commentDao.update(
+      commentId,
+      article.ArticleId,
+      payload
+    );
     if (!comment) {
       throw ServiceError.notFound("Comment not found", { commentId });
     }
@@ -244,8 +264,9 @@ const deleteComment = async (
   next: NextFunction
 ) => {
   try {
+    const articleId = parseInt(req.params.articleId, 10);
     const commentId = parseInt(req.params.commentId, 10);
-    const success = await commentDao.delete(commentId);
+    const success = await commentDao.delete(commentId, articleId);
     if (!success) {
       throw ServiceError.notFound("Comment not found", { commentId });
     }

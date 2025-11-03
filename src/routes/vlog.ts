@@ -103,6 +103,7 @@ getVlogById.validationScheme = {
  *                 Title: "My First Vlog"
  *                 Content: "This is the vlog content..."
  *                 Excerpt: "A short introduction"
+ *                 Slug: "my-first-vlog"
  *                 Tags: ["vlog", "video"]
  *                 VideoFile:
  *                   VideoFileUrl: "https://example.com/video.mp4"
@@ -112,12 +113,14 @@ getVlogById.validationScheme = {
  *                 - Title: "Vlog 1"
  *                   Content: "Content..."
  *                   Excerpt: "Excerpt..."
+ *                   Slug: "vlog-1"
  *                   Tags: ["tech"]
  *                   VideoFile:
  *                     VideoFileUrl: "https://example.com/video1.mp4"
  *                 - Title: "Vlog 2"
  *                   Content: "More content..."
  *                   Excerpt: "Another excerpt..."
+ *                   Slug: "vlog-2"
  *                   Tags: ["tutorial"]
  *                   VideoFile:
  *                     VideoFileUrl: "https://example.com/video2.mp4"
@@ -178,7 +181,7 @@ createVlog.validationScheme = {
       Title: Joi.string().min(1).max(200).required(),
       Excerpt: Joi.string().min(1).max(500).required(),
       Content: Joi.string().min(1).required(),
-      Slug: Joi.string().max(255).optional(),
+      Slug: Joi.string().max(255).required(),
       Tags: Joi.array().items(Joi.string().max(50)).optional(),
       VideoFile: Joi.object({
         VideoFileUrl: Joi.string().uri().required(),
@@ -191,7 +194,7 @@ createVlog.validationScheme = {
           Title: Joi.string().min(1).max(200).required(),
           Excerpt: Joi.string().min(1).max(500).required(),
           Content: Joi.string().min(1).required(),
-          Slug: Joi.string().max(255).optional(),
+          Slug: Joi.string().max(255).required(),
           Tags: Joi.array().items(Joi.string().max(50)).optional(),
           VideoFile: Joi.object({
             VideoFileUrl: Joi.string().uri().required(),

@@ -101,23 +101,23 @@ getBlogById.validationScheme = {
  *               summary: Single blog
  *               value:
  *                 Title: "Getting Started with TypeORM"
- *                 Content: "TypeORM is a powerful ORM..."
  *                 Excerpt: "Learn the basics of TypeORM"
+ *                 Content: "TypeORM is a powerful ORM..."
+ *                 Slug: "getting-started-with-typeorm"
  *                 Tags: ["typescript", "database", "orm"]
- *                 Readtime: 5
  *             bulk:
  *               summary: Multiple blogs
  *               value:
  *                 - Title: "First Blog"
- *                   Content: "Content here..."
  *                   Excerpt: "Excerpt..."
+ *                   Content: "Content here..."
+ *                   Slug: "first-blog"
  *                   Tags: ["tech"]
- *                   Readtime: 3
  *                 - Title: "Second Blog"
- *                   Content: "More content..."
  *                   Excerpt: "Another excerpt..."
+ *                   Content: "More content..."
+ *                   Slug: "second-blog"
  *                   Tags: ["coding"]
- *                   Readtime: 7
  *     responses:
  *       201:
  *         description: Blog(s) created successfully
