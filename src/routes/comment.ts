@@ -6,6 +6,31 @@ import ServiceError from "../core/serviceError";
 
 const commentDao = new CommentDAO();
 
+/**
+ * @openapi
+ * /api/articles/{articleId}/comments:
+ *   get:
+ *     summary: Get all comments for an article
+ *     description: Retrieve all comments associated with a specific article
+ *     tags: [Comments]
+ *     parameters:
+ *       - in: path
+ *         name: articleId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The article ID
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: List of comments
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Comment'
+ */
 const getAllCommentsByArticleId = async (
   req: Request,
   res: Response,
@@ -25,6 +50,55 @@ getAllCommentsByArticleId.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/articles/{articleId}/comments:
+ *   post:
+ *     summary: Create a new comment
+ *     description: Add a new comment to an article. This will trigger a real-time WebSocket broadcast to all connected clients.
+ *     tags: [Comments]
+ *     parameters:
+ *       - in: path
+ *         name: articleId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The article ID
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - UserId
+ *               - Content
+ *             properties:
+ *               UserId:
+ *                 type: integer
+ *                 description: The ID of the user posting the comment
+ *                 example: 1
+ *               Content:
+ *                 type: string
+ *                 minLength: 2
+ *                 maxLength: 1000
+ *                 description: The comment content
+ *                 example: "Great article! Very informative."
+ *     responses:
+ *       201:
+ *         description: Comment created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comment'
+ *       400:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 const createComment = async (
   req: Request,
   res: Response,
@@ -52,6 +126,55 @@ createComment.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/articles/{articleId}/comments/{commentId}:
+ *   put:
+ *     summary: Update a comment
+ *     description: Update the content of an existing comment
+ *     tags: [Comments]
+ *     parameters:
+ *       - in: path
+ *         name: articleId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The article ID
+ *         example: 1
+ *       - in: path
+ *         name: commentId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The comment ID
+ *         example: 5
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - Content
+ *             properties:
+ *               Content:
+ *                 type: string
+ *                 minLength: 2
+ *                 maxLength: 1000
+ *                 description: The updated comment content
+ *                 example: "This is my updated comment."
+ *     responses:
+ *       200:
+ *         description: Comment updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Comment'
+ *       404:
+ *         description: Comment not found
+ *       400:
+ *         description: Validation error
+ */
 const updateComment = async (
   req: Request,
   res: Response,
@@ -83,6 +206,38 @@ updateComment.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/articles/{articleId}/comments/{commentId}:
+ *   delete:
+ *     summary: Delete a comment
+ *     description: Permanently delete a comment from an article
+ *     tags: [Comments]
+ *     parameters:
+ *       - in: path
+ *         name: articleId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The article ID
+ *         example: 1
+ *       - in: path
+ *         name: commentId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The comment ID to delete
+ *         example: 5
+ *     responses:
+ *       204:
+ *         description: Comment deleted successfully (no content)
+ *       404:
+ *         description: Comment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 const deleteComment = async (
   req: Request,
   res: Response,

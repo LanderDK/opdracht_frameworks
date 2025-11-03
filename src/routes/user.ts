@@ -6,6 +6,35 @@ import ServiceError from "../core/serviceError";
 
 const userDao = new UserDAO();
 
+/**
+ * @openapi
+ * /api/users/{id}:
+ *   get:
+ *     summary: Get user by ID
+ *     description: Retrieve a single user by their ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The user ID
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: User details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id, 10);
@@ -26,6 +55,52 @@ getUserById.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/users:
+ *   post:
+ *     summary: Create a new user
+ *     description: Register a new user in the system
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - Username
+ *               - Email
+ *               - Roles
+ *             properties:
+ *               Username:
+ *                 type: string
+ *                 minLength: 2
+ *                 maxLength: 100
+ *                 description: User's username
+ *                 example: "johndoe"
+ *               Email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *                 example: "john.doe@example.com"
+ *               Roles:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   enum: [user, admin]
+ *                 description: User roles
+ *                 example: ["user"]
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Validation error
+ */
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await userDao.create(req.body);
@@ -42,6 +117,47 @@ createUser.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/users/{id}:
+ *   put:
+ *     summary: Update a user
+ *     description: Update an existing user's information
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The user ID
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - Email
+ *             properties:
+ *               Email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's updated email address
+ *                 example: "newemail@example.com"
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *       400:
+ *         description: Validation error
+ */
 const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id, 10);
@@ -62,6 +178,31 @@ updateUser.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/users/{id}:
+ *   delete:
+ *     summary: Delete a user
+ *     description: Permanently delete a user from the system
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The user ID
+ *         example: 1
+ *     responses:
+ *       204:
+ *         description: User deleted successfully (no content)
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(req.params.id, 10);

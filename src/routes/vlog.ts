@@ -6,6 +6,23 @@ import Joi from "joi";
 
 const vlogDao = new VlogDAO();
 
+/**
+ * @openapi
+ * /api/vlogs:
+ *   get:
+ *     summary: Get all vlogs
+ *     description: Retrieve all video blog posts
+ *     tags: [Vlogs]
+ *     responses:
+ *       200:
+ *         description: List of vlogs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Vlog'
+ */
 //GET ALL VLOGS
 const getAllVlogs = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -16,6 +33,31 @@ const getAllVlogs = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+/**
+ * @openapi
+ * /api/vlogs/{id}:
+ *   get:
+ *     summary: Get vlog by ID
+ *     description: Retrieve a single vlog by its ID including video file information
+ *     tags: [Vlogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The vlog ID
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Vlog details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Vlog'
+ *       404:
+ *         description: Vlog not found
+ */
 // GET vlog by ID
 const getVlogById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -37,6 +79,62 @@ getVlogById.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/vlogs:
+ *   post:
+ *     summary: Create new vlog(s)
+ *     description: Create one or multiple vlogs. Supports both single and bulk creation. Each vlog requires a VideoFile with VideoFileUrl.
+ *     tags: [Vlogs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             oneOf:
+ *               - $ref: '#/components/schemas/VlogInput'
+ *               - type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/VlogInput'
+ *           examples:
+ *             single:
+ *               summary: Single vlog
+ *               value:
+ *                 Title: "My First Vlog"
+ *                 Content: "This is the vlog content..."
+ *                 Excerpt: "A short introduction"
+ *                 Tags: ["vlog", "video"]
+ *                 VideoFile:
+ *                   VideoFileUrl: "https://example.com/video.mp4"
+ *             bulk:
+ *               summary: Multiple vlogs
+ *               value:
+ *                 - Title: "Vlog 1"
+ *                   Content: "Content..."
+ *                   Excerpt: "Excerpt..."
+ *                   Tags: ["tech"]
+ *                   VideoFile:
+ *                     VideoFileUrl: "https://example.com/video1.mp4"
+ *                 - Title: "Vlog 2"
+ *                   Content: "More content..."
+ *                   Excerpt: "Another excerpt..."
+ *                   Tags: ["tutorial"]
+ *                   VideoFile:
+ *                     VideoFileUrl: "https://example.com/video2.mp4"
+ *     responses:
+ *       201:
+ *         description: Vlog(s) created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/schemas/Vlog'
+ *                 - type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Vlog'
+ *       400:
+ *         description: Validation error
+ */
 // POST create new vlog(s) - single or bulk
 const createVlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -104,6 +202,64 @@ createVlog.validationScheme = {
   ) as any, // Type assertion to work with validation middleware
 };
 
+/**
+ * @openapi
+ * /api/vlogs/{id}:
+ *   put:
+ *     summary: Update a vlog
+ *     description: Update an existing vlog by its ID. Note that VideoFile cannot be updated through this endpoint.
+ *     tags: [Vlogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The vlog ID
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Title:
+ *                 type: string
+ *                 minLength: 5
+ *                 maxLength: 200
+ *                 example: "Updated Vlog Title"
+ *               Excerpt:
+ *                 type: string
+ *                 minLength: 20
+ *                 maxLength: 500
+ *                 example: "Updated excerpt"
+ *               Content:
+ *                 type: string
+ *                 minLength: 50
+ *                 example: "Updated vlog content here..."
+ *               Slug:
+ *                 type: string
+ *                 maxLength: 255
+ *                 example: "updated-vlog-title"
+ *               Tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   maxLength: 50
+ *                 example: ["updated", "vlog"]
+ *     responses:
+ *       200:
+ *         description: Vlog updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Vlog'
+ *       404:
+ *         description: Vlog not found
+ *       400:
+ *         description: Validation error
+ */
 // PUT update vlog
 const updateVlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -141,6 +297,31 @@ updateVlog.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/vlogs/{id}:
+ *   delete:
+ *     summary: Delete a vlog
+ *     description: Permanently delete a vlog by its ID. This will also delete the associated VideoFile.
+ *     tags: [Vlogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The vlog ID
+ *         example: 1
+ *     responses:
+ *       204:
+ *         description: Vlog deleted successfully (no content)
+ *       404:
+ *         description: Vlog not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 // DELETE vlog
 const deleteVlog = async (req: Request, res: Response, next: NextFunction) => {
   try {

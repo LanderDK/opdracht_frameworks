@@ -10,6 +10,7 @@ import * as emoji from "node-emoji";
 import { initializeData, shutdownData } from "./data";
 import path from "path";
 import { initializeWebSocket } from "./socket";
+import { swaggerUi, swaggerSpec } from "./swagger";
 
 // Configuration
 const NODE_ENV = process.env.NODE_ENV;
@@ -93,6 +94,16 @@ export default async function createServer() {
 
   // Install view routes (before API routes)
   installViewRoutes(app);
+
+  // Swagger API Documentation
+  app.use(
+    "/docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: ".swagger-ui .topbar { display: none }",
+      customSiteTitle: "Blog & Vlog API Documentation",
+    })
+  );
 
   // Install REST routes
   installRestRoutes(app);

@@ -6,6 +6,23 @@ import Joi from "joi";
 
 const blogDao = new BlogDAO();
 
+/**
+ * @openapi
+ * /api/blogs:
+ *   get:
+ *     summary: Get all blogs
+ *     description: Retrieve all blog posts
+ *     tags: [Blogs]
+ *     responses:
+ *       200:
+ *         description: List of blogs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Blog'
+ */
 //GET ALL BLOGS
 const getAllBlogs = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -16,6 +33,31 @@ const getAllBlogs = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+/**
+ * @openapi
+ * /api/blogs/{id}:
+ *   get:
+ *     summary: Get blog by ID
+ *     description: Retrieve a single blog post by its ID
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The blog ID
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: Blog details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Blog'
+ *       404:
+ *         description: Blog not found
+ */
 // GET blog by ID
 const getBlogById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -37,6 +79,51 @@ getBlogById.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/blogs:
+ *   post:
+ *     summary: Create new blog(s)
+ *     description: Create one or multiple blog posts. Supports both single and bulk creation.
+ *     tags: [Blogs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             oneOf:
+ *               - $ref: '#/components/schemas/BlogInput'
+ *               - type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/BlogInput'
+ *           examples:
+ *             single:
+ *               summary: Single blog
+ *               value:
+ *                 Title: "Getting Started with TypeORM"
+ *                 Content: "TypeORM is a powerful ORM..."
+ *                 Excerpt: "Learn the basics of TypeORM"
+ *                 Tags: ["typescript", "database", "orm"]
+ *                 Readtime: 5
+ *             bulk:
+ *               summary: Multiple blogs
+ *               value:
+ *                 - Title: "First Blog"
+ *                   Content: "Content here..."
+ *                   Excerpt: "Excerpt..."
+ *                   Tags: ["tech"]
+ *                   Readtime: 3
+ *                 - Title: "Second Blog"
+ *                   Content: "More content..."
+ *                   Excerpt: "Another excerpt..."
+ *                   Tags: ["coding"]
+ *                   Readtime: 7
+ *     responses:
+ *       201:
+ *         description: Blog(s) created successfully
+ *       400:
+ *         description: Validation error
+ */
 // POST create new blog(s) - single or bulk
 const createBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -110,6 +197,69 @@ createBlog.validationScheme = {
   ) as any, // Type assertion to work with validation middleware
 };
 
+/**
+ * @openapi
+ * /api/blogs/{id}:
+ *   put:
+ *     summary: Update a blog
+ *     description: Update an existing blog post by its ID. Read time is automatically calculated based on content.
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The blog ID
+ *         example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - Title
+ *               - Excerpt
+ *               - Content
+ *               - Slug
+ *             properties:
+ *               Title:
+ *                 type: string
+ *                 minLength: 1
+ *                 maxLength: 200
+ *                 example: "Updated Blog Title"
+ *               Excerpt:
+ *                 type: string
+ *                 minLength: 1
+ *                 maxLength: 500
+ *                 example: "Updated excerpt"
+ *               Content:
+ *                 type: string
+ *                 minLength: 1
+ *                 example: "Updated blog content here..."
+ *               Slug:
+ *                 type: string
+ *                 maxLength: 255
+ *                 example: "updated-blog-title"
+ *               Tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   maxLength: 50
+ *                 example: ["updated", "blog"]
+ *     responses:
+ *       200:
+ *         description: Blog updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Blog'
+ *       404:
+ *         description: Blog not found
+ *       400:
+ *         description: Validation error
+ */
 // PUT update blog
 const updateBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -154,6 +304,31 @@ updateBlog.validationScheme = {
   },
 };
 
+/**
+ * @openapi
+ * /api/blogs/{id}:
+ *   delete:
+ *     summary: Delete a blog
+ *     description: Permanently delete a blog post by its ID
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The blog ID
+ *         example: 1
+ *     responses:
+ *       204:
+ *         description: Blog deleted successfully (no content)
+ *       404:
+ *         description: Blog not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 // DELETE blog
 const deleteBlog = async (req: Request, res: Response, next: NextFunction) => {
   try {
