@@ -76,7 +76,7 @@ const options: swaggerJsdoc.Options = {
             },
             ArticleType: {
               type: "string",
-              enum: ["Blog", "Vlog"],
+              enum: ["blog", "vlog"],
               description: "Type of article",
             },
           },
