@@ -66,7 +66,7 @@ export default async function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.use(express.static(path.join(__dirname, "public")));
+  app.use(express.static(path.join(__dirname, "..", "public")));
 
   // Request logging middleware
   app.use((req: Request, res: Response, next: NextFunction) => {
@@ -185,7 +185,7 @@ export default async function createServer() {
 
         // Initialize WebSocket handlers
         initializeWebSocket(io);
-        logger.info("✅ WebSocket initialized");
+        logger.info("WebSocket initialized");
       });
     },
 

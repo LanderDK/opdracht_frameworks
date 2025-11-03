@@ -544,7 +544,7 @@ body {
 
 .form-container textarea {
   resize: vertical;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
 .hidden {
@@ -637,15 +637,4 @@ body {
   overflow-x: auto;
   font-size: 0.9rem;
   margin: 0.5rem 0;
-}
-
-.create-link {
-  background-color: #27ae60;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.create-link:hover {
-  background-color: #229954;
 }
