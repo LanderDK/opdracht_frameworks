@@ -12,7 +12,44 @@ block content
             button#clear-filter.btn.btn-secondary Clear Filter
 
     .articles-grid#articles-container
-        .loading Loading articles...
+        if articles && articles.length > 0
+            each article in articles
+                .article-card
+                    .article-type(class=article.ArticleType.toLowerCase())= article.ArticleType
+                    h3= article.Title
+                    p.excerpt= article.Excerpt
+                    .meta
+                        span.date= new Date(article.PublishedAt).toLocaleDateString()
+                        if article.Readtime
+                            span.readtime #{article.Readtime} min
+                    .tags
+                        each tag in article.Tags
+                            span.tag.clickable(onclick=`filterByTag('${tag}')`) ##{tag}
+                    a.btn.btn-primary(href=article.ArticleType === 'blog' ? `/blogs/${article.ArticleId}` : `/vlogs/${article.ArticleId}`) #{article.ArticleType === 'blog' ? 'Read More' : 'Watch Now'}
+        else
+            p.no-data No articles found.
 
 block scripts
-    script(src="/js/index.js")
+    script.
+        function filterByTag(tag) {
+            window.location.href = `/?tag=${encodeURIComponent(tag)}`;
+        }
+
+        // Setup filter input
+        const tagFilter = document.getElementById("tag-filter");
+        const clearBtn = document.getElementById("clear-filter");
+
+        // Filter on Enter key
+        tagFilter.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                const tag = tagFilter.value.trim();
+                if (tag) {
+                    filterByTag(tag);
+                }
+            }
+        });
+
+        // Clear filter button
+        clearBtn.addEventListener("click", () => {
+            window.location.href = "/";
+        });

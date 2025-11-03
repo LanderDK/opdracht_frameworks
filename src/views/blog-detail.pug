@@ -1,30 +1,52 @@
 extends layout
 
 block content
-    #blog-detail
-        .loading Loading blog...
-    
+    if blog
+        article.article-full
+            .article-type.blog Blog
+            h1= blog.Title
+            .article-meta
+                span.date #{new Date(blog.PublishedAt).toLocaleDateString()}
+                if blog.Readtime
+                    span.readtime #{blog.Readtime} min read
+            .article-content
+                p= blog.Content
+            if blog.Tags && blog.Tags.length > 0
+                .tags
+                    each tag in blog.Tags
+                        span.tag ##{tag}
+    else
+        p.error Blog not found.
+
     .comments-section
         h2 Comments
-            span#comment-count.count
-        
+            span#comment-count.count (#{comments.length})
+
         .comment-form-container
             h3 Add a Comment
             form#comment-form
                 .form-group
                     label(for="userId") User ID
                     input#userId(type="number" name="userId" placeholder="Enter your user ID" required min="1")
-                
+
                 .form-group
                     label(for="content") Comment
                     textarea#content(name="content" placeholder="Write your comment here..." required rows="4")
-                
+
                 button.btn.btn-primary(type="submit") Post Comment
-        
+
         #comments-container
-            .loading Loading comments...
+            if comments && comments.length > 0
+                each comment in comments
+                    .comment(data-comment-id=comment.CommentId)
+                        .comment-header
+                            strong.comment-author= comment.User.Username
+                            span.comment-date= new Date(comment.PublishedAt).toLocaleString()
+                        .comment-content= comment.Content
+            else
+                p.no-data No comments yet. Be the first to comment!
 
 block scripts
     script.
-        const ARTICLE_ID = !{blogId};
-    script(src="/js/blog-detail.js")
+        const ARTICLE_ID = !{blog.ArticleId};
+    script(src="/js/comments-realtime.js")

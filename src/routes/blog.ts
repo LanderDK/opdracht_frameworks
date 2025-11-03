@@ -6,6 +6,16 @@ import Joi from "joi";
 
 const blogDao = new BlogDAO();
 
+//GET ALL BLOGS
+const getAllBlogs = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const blogs = await blogDao.findAll();
+    res.json(blogs);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // GET blog by ID
 const getBlogById = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -163,15 +173,6 @@ deleteBlog.validationScheme = {
   params: {
     id: Joi.number().integer().positive().required(),
   },
-};
-
-const getAllBlogs = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const blogs = await blogDao.findAll();
-    res.json(blogs);
-  } catch (error) {
-    next(error);
-  }
 };
 
 export default function installBlogRouter(router: Router): void {

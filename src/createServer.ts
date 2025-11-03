@@ -3,7 +3,7 @@ import cors from "cors";
 import { Server as HttpServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { installRestRoutes } from "./routes";
-import viewRoutes from "./routes/views";
+import installViewRoutes from "./routes/views";
 import { initializeLogger, getLogger } from "./core/logging";
 import { ServiceError } from "./core/serviceError";
 import * as emoji from "node-emoji";
@@ -92,7 +92,7 @@ export default async function createServer() {
   });
 
   // Install view routes (before API routes)
-  app.use("/", viewRoutes);
+  installViewRoutes(app);
 
   // Install REST routes
   installRestRoutes(app);

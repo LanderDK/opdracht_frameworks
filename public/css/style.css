@@ -273,6 +273,20 @@ body {
   margin-bottom: 1rem;
 }
 
+/* Video container for vlogs */
+.video-container {
+  margin: 2rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.video-container video {
+  width: 100%;
+  display: block;
+  background: #000;
+}
+
 /* Comments section */
 .comments-section {
   background: white;
@@ -544,7 +558,7 @@ body {
 
 .form-container textarea {
   resize: vertical;
-  font-family: "Courier New", monospace;
+  font-family: 'Courier New', monospace;
 }
 
 .hidden {
@@ -637,4 +651,15 @@ body {
   overflow-x: auto;
   font-size: 0.9rem;
   margin: 0.5rem 0;
+}
+
+.create-link {
+  background-color: #27ae60;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.create-link:hover {
+  background-color: #229954;
 }

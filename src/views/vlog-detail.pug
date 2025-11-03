@@ -1,12 +1,31 @@
 extends layout
 
 block content
-    #vlog-detail
-        .loading Loading vlog...
+    if vlog
+        article.article-full
+            .article-type.vlog Vlog
+            h1= vlog.Title
+            .article-meta
+                span.date #{new Date(vlog.PublishedAt).toLocaleDateString()}
+                if vlog.Readtime
+                    span.readtime #{vlog.Readtime} min watch
+            if vlog.VideoFile
+                .video-container
+                    video(controls width="100%")
+                        source(src=vlog.VideoFile.VideoFileUrl type="video/mp4")
+                        | Your browser does not support the video tag.
+            .article-content
+                p= vlog.Content
+            if vlog.Tags && vlog.Tags.length > 0
+                .tags
+                    each tag in vlog.Tags
+                        span.tag ##{tag}
+    else
+        p.error Vlog not found.
 
     .comments-section
         h2 Comments
-            span#comment-count.count
+            span#comment-count.count (#{comments.length})
 
         .comment-form-container
             h3 Add a Comment
@@ -22,9 +41,17 @@ block content
                 button.btn.btn-primary(type="submit") Post Comment
 
         #comments-container
-            .loading Loading comments...
+            if comments && comments.length > 0
+                each comment in comments
+                    .comment(data-comment-id=comment.CommentId)
+                        .comment-header
+                            strong.comment-author= comment.User.Username
+                            span.comment-date= new Date(comment.PublishedAt).toLocaleString()
+                        .comment-content= comment.Content
+            else
+                p.no-data No comments yet. Be the first to comment!
 
 block scripts
     script.
-        const ARTICLE_ID = !{vlogId};
-    script(src="/js/vlog-detail.js")
+        const ARTICLE_ID = !{vlog.ArticleId};
+    script(src="/js/comments-realtime.js")
