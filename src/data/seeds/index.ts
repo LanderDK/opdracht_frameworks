@@ -36,12 +36,12 @@ async function runSeeds() {
     // Clear existing data
     await clearDatabase();
     // Seed in the correct order to respect relationships
-    await seedUsers(3);
+    await seedUsers(5);
     await seedVideoFiles(5);
     await seedBlogs();
     await seedVlogs();
     await seedComments(10);
-    await seedUserArticles(5);
+    //await seedUserArticles(20);
 
     console.log("\n✅ Database seeding completed successfully!");
   } catch (error) {

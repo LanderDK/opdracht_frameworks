@@ -10,7 +10,7 @@ import ArticleType from "../enum/ArticleType";
  */
 export default async function seedBlogs(ensureCount: number = 5): Promise<Blog[]> {
   const blogRepository = AppDataSource.getRepository(Blog);
-
+  const userArticleRepository = AppDataSource.getRepository("UserArticle");
   // Check if blogs already exist
   const existingCount = await blogRepository.count();
   if (existingCount > 0) {
@@ -48,6 +48,10 @@ export default async function seedBlogs(ensureCount: number = 5): Promise<Blog[]
       tags.push(shuffledTags[j]);
     }
 
+    const userids = Array.from({ length: Math.floor(Math.random() * 3) + 1 }, () =>
+      Math.floor(Math.random() * 5) + 1
+    );
+
     const publishedAt = faker.date.past(1);
     const updatedAt = faker.date.between(publishedAt, new Date());
 
@@ -68,5 +72,21 @@ export default async function seedBlogs(ensureCount: number = 5): Promise<Blog[]
 
   await blogRepository.save(blogs);
   console.log(`✓ Seeded ${blogs.length} blogs`);
+
+  for (const blog of blogs) {
+    const count = Math.floor(Math.random() * 3) + 1; // 1..3
+    const useridsSet = new Set<number>();
+    while (useridsSet.size < count) {
+      useridsSet.add(Math.floor(Math.random() * 5) + 1); // 1..5
+    }
+    const articleid = blog.ArticleId;
+    for (const userid of useridsSet) {
+      await userArticleRepository.save({
+        UserId: userid,
+        ArticleId: articleid,
+      });
+    }
+  }
+
   return blogs;
 }

@@ -13,9 +13,11 @@ export default async function seedVlogs(
 ): Promise<Vlog[]> {
   const vlogRepository = AppDataSource.getRepository(Vlog);
   const videoFileRepository = AppDataSource.getRepository(VideoFile);
+  const userArticleRepository = AppDataSource.getRepository("UserArticle");
 
   // Check if vlogs already exist
   const existingCount = await vlogRepository.count();
+
   if (existingCount > 0) {
     console.log(
       `Vlogs already seeded (${existingCount} vlogs found). Skipping...`
@@ -90,5 +92,21 @@ export default async function seedVlogs(
 
   await vlogRepository.save(vlogs);
   console.log(`✓ Seeded ${vlogs.length} vlogs`);
+
+  for (const vlog of vlogs) {
+    const count = Math.floor(Math.random() * 3) + 1; // 1..3
+    const useridsSet = new Set<number>();
+    while (useridsSet.size < count) {
+      useridsSet.add(Math.floor(Math.random() * 5) + 1); // 1..5
+    }
+    const articleid = vlog.ArticleId;
+    for (const userid of useridsSet) {
+      await userArticleRepository.save({
+        UserId: userid,
+        ArticleId: articleid,
+      });
+    }
+  }
+
   return vlogs;
 }
