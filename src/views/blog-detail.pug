@@ -9,6 +9,10 @@ block content
                 span.date #{new Date(blog.PublishedAt).toLocaleDateString()}
                 if blog.Readtime
                     span.readtime #{blog.Readtime} min read
+                if authors
+                    span.authors By #{authors.join(", ")}
+                else 
+                    p.error Author information not available.
             .article-content
                 p= blog.Content
             if blog.Tags && blog.Tags.length > 0

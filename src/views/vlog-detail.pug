@@ -9,11 +9,22 @@ block content
                 span.date #{new Date(vlog.PublishedAt).toLocaleDateString()}
                 if vlog.Readtime
                     span.readtime #{vlog.Readtime} min watch
-            if vlog.VideoFile
+                if authors
+                    span.authors By #{authors.join(", ")}
+                else 
+                    p.error Author information not available.
+            if url
+                - const embedUrl = url.replace('watch?v=', 'embed/')
                 .video-container
-                    video(controls width="100%")
-                        source(src=vlog.VideoFile.VideoFileUrl type="video/mp4")
-                        | Your browser does not support the video tag.
+                  iframe(
+                    width="560",
+                    height="315",
+                    src=embedUrl,
+                    title="YouTube video player",
+                    frameborder="0",
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+                    allowfullscreen
+                  )
             .article-content
                 p= vlog.Content
             if vlog.Tags && vlog.Tags.length > 0

@@ -7,11 +7,14 @@ import { ServiceError } from "../core/serviceError";
 import Article from "../data/entity/Article";
 import validate from "../core/validation";
 import Joi from "joi";
+import { UserArticleDAO } from "../dao/UserArticleDao";
+
 
 const articleDao = new ArticleDAO();
 const blogDao = new BlogDAO();
 const vlogDao = new VlogDAO();
 const commentDao = new CommentDAO();
+const userArticleDao = new UserArticleDAO();
 
 // Homepage - overzicht van alle articles
 const homepage = async (req: Request, res: Response, next: NextFunction) => {
@@ -50,11 +53,12 @@ const blogDetail = async (req: Request, res: Response, next: NextFunction) => {
 
     // Load comments for this article
     const comments = await commentDao.findAllByArticleId(id);
-
+    const authors = await userArticleDao.findAuthorsByArticleId(id);
     res.render("blog-detail", {
       title: `Blog Detail - ${blog.Title}`,
       blog: blog,
       comments: comments,
+      authors: authors,
     });
   } catch (error) {
     next(error);
@@ -74,14 +78,18 @@ const vlogDetail = async (req: Request, res: Response, next: NextFunction) => {
     if (!vlog) {
       throw ServiceError.notFound("Vlog not found", { id });
     }
-
+    
     // Load comments for this article
     const comments = await commentDao.findAllByArticleId(id);
-
+    const authors = await userArticleDao.findAuthorsByArticleId(id);
+    const test = await vlog.VideoFile;
+    console.log("Vlog Detail - VideoFile:", test);
     res.render("vlog-detail", {
       title: `Vlog Detail - ${vlog.Title}`,
       vlog: vlog,
+      url: test.VideoFileUrl,
       comments: comments,
+      authors: authors,
     });
   } catch (error) {
     next(error);
