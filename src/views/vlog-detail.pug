@@ -9,6 +9,10 @@ block content
                 span.date #{new Date(vlog.PublishedAt).toLocaleDateString()}
                 if vlog.Readtime
                     span.readtime #{vlog.Readtime} min watch
+                if authors
+                    span.authors By #{authors.join(", ")}
+                else 
+                    p.error Author information not available.
             if vlog.VideoFile
                 .video-container
                     video(controls width="100%")
