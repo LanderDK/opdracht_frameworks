@@ -7,14 +7,14 @@ import { ServiceError } from "../core/serviceError";
 import Article from "../data/entity/Article";
 import validate from "../core/validation";
 import Joi from "joi";
-import { UserArticleDao } from "../dao/UserArticleDao";
+import { UserArticleDAO } from "../dao/UserArticleDao";
 
 
 const articleDao = new ArticleDAO();
 const blogDao = new BlogDAO();
 const vlogDao = new VlogDAO();
 const commentDao = new CommentDAO();
-const userArticleDao = new UserArticleDao();
+const userArticleDao = new UserArticleDAO();
 
 // Homepage - overzicht van alle articles
 const homepage = async (req: Request, res: Response, next: NextFunction) => {

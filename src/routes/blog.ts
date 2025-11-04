@@ -3,9 +3,10 @@ import BlogDAO from "../dao/BlogDao";
 import { ServiceError } from "../core/serviceError";
 import validate from "../core/validation";
 import Joi from "joi";
+import { UserArticleDAO } from "../dao/UserArticleDao";
 
 const blogDao = new BlogDAO();
-
+const userArticleDao = new UserArticleDAO();
 /**
  * @openapi
  * /api/blogs:
@@ -104,6 +105,7 @@ getBlogById.validationScheme = {
  *                 Excerpt: "Learn the basics of TypeORM"
  *                 Content: "TypeORM is a powerful ORM..."
  *                 Slug: "getting-started-with-typeorm"
+ *                 UserIds: [1,2,3]
  *                 Tags: ["typescript", "database", "orm"]
  *             bulk:
  *               summary: Multiple blogs
@@ -112,11 +114,13 @@ getBlogById.validationScheme = {
  *                   Excerpt: "Excerpt..."
  *                   Content: "Content here..."
  *                   Slug: "first-blog"
+ *                   UserIds: [1,2]
  *                   Tags: ["tech"]
  *                 - Title: "Second Blog"
  *                   Excerpt: "Another excerpt..."
  *                   Content: "More content..."
  *                   Slug: "second-blog"
+ *                   UserIds: [1,3]
  *                   Tags: ["coding"]
  *     responses:
  *       201:
@@ -142,6 +146,7 @@ const createBlog = async (req: Request, res: Response, next: NextFunction) => {
           Title: blogData.Title,
           Excerpt: blogData.Excerpt,
           Content: blogData.Content,
+          UserIds: req.body.UserIds,
           Slug: blogData.Slug,
           Tags: blogData.Tags || [],
           Readtime: readtimeInMinutes,
@@ -149,6 +154,18 @@ const createBlog = async (req: Request, res: Response, next: NextFunction) => {
       });
 
       const savedBlogs = await blogDao.createBulk(blogsData);
+      for (let i = 0; i < savedBlogs.length; i++) {
+        const userids = req.body[i].UserIds;
+        const article_id = savedBlogs[i].ArticleId;
+
+        for (const uid of userids || []) {
+          const payload_ua = {
+            UserId: uid,
+            ArticleId: article_id,
+          };
+          await userArticleDao.create(payload_ua);
+        }
+      }
       res.status(201).json(savedBlogs);
     } else {
       // Single insert
@@ -156,7 +173,7 @@ const createBlog = async (req: Request, res: Response, next: NextFunction) => {
         (word: string) => word.length > 0
       ).length;
       const readtimeInMinutes = Math.ceil(wordCount / 200);
-
+      const userids = req.body.UserIds;
       const payload = {
         Title: req.body.Title,
         Excerpt: req.body.Excerpt,
@@ -166,6 +183,16 @@ const createBlog = async (req: Request, res: Response, next: NextFunction) => {
         Readtime: readtimeInMinutes,
       };
       const blog = await blogDao.create(payload);
+      const article_id = blog.ArticleId;
+
+      for (const uid of userids || []) {
+        const payload_ua = {
+          UserId: uid,
+          ArticleId: article_id,
+        };
+        await userArticleDao.create(payload_ua);
+      }
+
       res.status(201).json(blog);
     }
   } catch (error) {
@@ -180,6 +207,7 @@ createBlog.validationScheme = {
       Excerpt: Joi.string().min(1).max(500).required(),
       Content: Joi.string().min(1).required(),
       Slug: Joi.string().max(255).required(),
+      UserIds: Joi.array().items(Joi.number().integer().positive()).optional(),
       Tags: Joi.array().items(Joi.string().max(50)).optional(),
     }),
     // Array of blogs
@@ -190,6 +218,7 @@ createBlog.validationScheme = {
           Excerpt: Joi.string().min(1).max(500).required(),
           Content: Joi.string().min(1).required(),
           Slug: Joi.string().max(255).required(),
+          UserIds: Joi.array().items(Joi.number().integer().positive()).optional(),
           Tags: Joi.array().items(Joi.string().max(50)).optional(),
         })
       )
@@ -300,6 +329,7 @@ updateBlog.validationScheme = {
     Excerpt: Joi.string().min(1).max(500).required(),
     Content: Joi.string().min(1).required(),
     Slug: Joi.string().max(255).required(),
+    UserIds: Joi.array().items(Joi.number().integer().positive()).optional(),
     Tags: Joi.array().items(Joi.string().max(50)).optional(),
   },
 };

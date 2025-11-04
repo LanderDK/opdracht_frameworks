@@ -3,7 +3,7 @@ import AppDataSource from "../data/data-source";
 import UserArticle from "../data/entity/UserArticle";
 import UserDAO from "./UserDao";
 
-export class UserArticleDao {
+export class UserArticleDAO {
 
   protected repo: Repository<UserArticle>;
   protected userDao: UserDAO = new UserDAO();
@@ -26,4 +26,10 @@ export class UserArticleDao {
     console.log("Author usernames:", userNames);
     return userNames
   }
+
+  async create(payload: Partial<UserArticle>): Promise<UserArticle> {
+    const userArticle = this.repo.create(payload);
+    return this.repo.save(userArticle);
+  }
+
 }
