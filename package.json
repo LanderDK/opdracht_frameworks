@@ -9,6 +9,7 @@
     "@types/node": "^22.13.10",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "cross-env": "^10.1.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
@@ -32,9 +33,10 @@
     "winston": "^3.18.3"
   },
   "scripts": {
-    "start": "env-cmd ts-node src/index.ts",
-    "dev": "env-cmd nodemon --exec npx ts-node src/index.ts",
+    "start": "cross-env DATABASE_HOST=database env-cmd ts-node src/index.ts",
+    "seed_docker": "cross-env DATABASE_HOST=database env-cmd ts-node src/data/seeds/index.ts",
+    "dev": "cross-env DATABASE_HOST=localhost env-cmd nodemon --exec npx ts-node src/index.ts",
     "typeorm": "typeorm-ts-node-commonjs",
-    "seed": "env-cmd ts-node src/data/seeds/index.ts"
+    "seed": "cross-env DATABASE_HOST=localhost env-cmd ts-node src/data/seeds/index.ts"
   }
 }
