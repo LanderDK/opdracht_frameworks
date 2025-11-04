@@ -1,0 +1,3 @@
+FROM mysql:8.0.44
+
+# No init file, everything gets initialized through typeorm in the app container
