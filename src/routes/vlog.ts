@@ -3,9 +3,10 @@ import VlogDAO from "../dao/VlogDao";
 import { ServiceError } from "../core/serviceError";
 import validate from "../core/validation";
 import Joi from "joi";
+import { UserArticleDAO } from "../dao/UserArticleDao";
 
 const vlogDao = new VlogDAO();
-
+const userArticleDao = new UserArticleDAO();
 /**
  * @openapi
  * /api/vlogs:
@@ -104,6 +105,7 @@ getVlogById.validationScheme = {
  *                 Content: "This is the vlog content..."
  *                 Excerpt: "A short introduction"
  *                 Slug: "my-first-vlog"
+ *                 UserIds: [1]
  *                 Tags: ["vlog", "video"]
  *                 VideoFile:
  *                   VideoFileUrl: "https://example.com/video.mp4"
@@ -114,6 +116,7 @@ getVlogById.validationScheme = {
  *                   Content: "Content..."
  *                   Excerpt: "Excerpt..."
  *                   Slug: "vlog-1"
+ *                   UserIds: [1, 2]
  *                   Tags: ["tech"]
  *                   VideoFile:
  *                     VideoFileUrl: "https://example.com/video1.mp4"
@@ -121,6 +124,7 @@ getVlogById.validationScheme = {
  *                   Content: "More content..."
  *                   Excerpt: "Another excerpt..."
  *                   Slug: "vlog-2"
+ *                   UserIds: [2]
  *                   Tags: ["tutorial"]
  *                   VideoFile:
  *                     VideoFileUrl: "https://example.com/video2.mp4"
@@ -156,9 +160,22 @@ const createVlog = async (req: Request, res: Response, next: NextFunction) => {
       }));
 
       const savedVlogs = await vlogDao.createBulk(vlogsData);
+      for (let i = 0; i < savedVlogs.length; i++) {
+        const userids = req.body[i].UserIds;
+        const article_id = savedVlogs[i].ArticleId;
+
+        for (const uid of userids || []) {
+          const payload_ua = {
+            UserId: uid,
+            ArticleId: article_id,
+          };
+          await userArticleDao.create(payload_ua);
+        }
+      }
       res.status(201).json(savedVlogs);
     } else {
       // Single insert
+      const userids = req.body.UserIds;
       const payload = {
         Title: req.body.Title,
         Excerpt: req.body.Excerpt,
@@ -168,6 +185,15 @@ const createVlog = async (req: Request, res: Response, next: NextFunction) => {
         VideoFile: req.body.VideoFile,
       };
       const vlog = await vlogDao.create(payload);
+      const article_id = vlog.ArticleId;
+
+      for (const uid of userids || []) {
+        const payload_ua = {
+          UserId: uid,
+          ArticleId: article_id,
+        };
+        await userArticleDao.create(payload_ua);
+      }
       res.status(201).json(vlog);
     }
   } catch (error) {
@@ -182,6 +208,7 @@ createVlog.validationScheme = {
       Excerpt: Joi.string().min(1).max(500).required(),
       Content: Joi.string().min(1).required(),
       Slug: Joi.string().max(255).required(),
+      UserIds: Joi.array().items(Joi.number().integer().positive()).optional(),
       Tags: Joi.array().items(Joi.string().max(50)).optional(),
       VideoFile: Joi.object({
         VideoFileUrl: Joi.string().uri().required(),
@@ -196,6 +223,7 @@ createVlog.validationScheme = {
           Content: Joi.string().min(1).required(),
           Slug: Joi.string().max(255).required(),
           Tags: Joi.array().items(Joi.string().max(50)).optional(),
+          UserIds: Joi.array().items(Joi.number().integer().positive()).optional(),
           VideoFile: Joi.object({
             VideoFileUrl: Joi.string().uri().required(),
           }).required(),
