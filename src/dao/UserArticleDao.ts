@@ -13,7 +13,6 @@ export class UserArticleDAO {
   }
 
   async findAuthorsByArticleId(articleId: number): Promise<string[]> {
-    console.log("Finding authors for article ID:", articleId);
 
     const rows = await AppDataSource.getRepository(UserArticle)
     .createQueryBuilder("ua")
@@ -21,9 +20,7 @@ export class UserArticleDAO {
     .where("ua.ArticleId = :articleId", { articleId: articleId })
     .getRawMany();
 
-    console.log("Raw user IDs:", rows);
     const userNames = await Promise.all(rows.map(async r => (await this.userDao.findById(Number(r.UserId))).Username));
-    console.log("Author usernames:", userNames);
     return userNames
   }
 
