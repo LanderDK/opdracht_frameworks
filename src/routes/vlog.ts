@@ -264,11 +264,11 @@ createVlog.validationScheme = {
  *                 type: string
  *                 minLength: 20
  *                 maxLength: 500
- *                 example: "Updated excerpt"
+ *                 example: "An updated excerpt for the vlog that is a bit longer. Should be at least 20 characters long!"
  *               Content:
  *                 type: string
  *                 minLength: 50
- *                 example: "Updated vlog content here..."
+ *                 example: "Updated vlog content can be put here and should be at least 50 characters long. Make sure it is long enough!"
  *               Slug:
  *                 type: string
  *                 maxLength: 255
