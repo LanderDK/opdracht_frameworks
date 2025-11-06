@@ -35,12 +35,9 @@ export default async function seedVlogs(
   if (videoFiles.length === 0) {
     console.log("No video files found — creating sample video files");
     const newVideoFiles: Partial<VideoFile>[] = [];
-    const videoHosts = ["youtube.com", "vimeo.com", "dailymotion.com"];
     for (let i = 0; i < Math.max(ensureCount, 3); i++) {
-      const host = videoHosts[Math.floor(Math.random() * videoHosts.length)];
-      const videoId = faker.datatype.uuid().substring(0, 11);
       newVideoFiles.push({
-        VideoFileUrl: `https://www.${host}/watch?v=${videoId}`,
+        VideoFileUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       });
     }
     const savedFiles = await videoFileRepository.save(

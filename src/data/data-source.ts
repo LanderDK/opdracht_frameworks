@@ -8,8 +8,6 @@ import Vlog from "./entity/Vlog";
 import Comment from "./entity/Comment";
 import UserArticle from "./entity/UserArticle";
 
-
-console.log("Database Host:", process.env.DATABASE_HOST);
 const AppDataSource = new DataSource({
   type: "mysql",
   host: process.env.DATABASE_HOST,

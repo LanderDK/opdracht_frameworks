@@ -10,13 +10,12 @@ export default class VlogDAO {
   constructor(protected ds = AppDataSource) {}
 
   async findAll(): Promise<Vlog[]> {
-    return this.repoVlog.find(); // Eager loading removed; lazy loading will be used in routes
+    return this.repoVlog.find();
   }
 
   async findById(id: number): Promise<Vlog | null> {
     return this.repoVlog.findOne({
       where: { ArticleId: id },
-      relations: ["VideoFile"], // dit zorgt ervoor dat de VideoFile ook geladen wordt, hetzelfde als "await vlog.VideoFile" in de route
     });
   }
 
@@ -49,7 +48,6 @@ export default class VlogDAO {
     // Load vlog with VideoFile relation
     const vlog = await this.repoVlog.findOne({
       where: { ArticleId: id },
-      relations: ["VideoFile"],
     });
 
     if (!vlog) return null;

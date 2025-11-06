@@ -1,8 +1,9 @@
 import AppDataSource from "../data-source";
 import VideoFile from "../entity/VideoFile";
-import * as faker from "faker";
 
-export default async function seedVideoFiles(count: number = 10): Promise<VideoFile[]> {
+export default async function seedVideoFiles(
+  count: number = 10
+): Promise<VideoFile[]> {
   const videoFileRepository = AppDataSource.getRepository(VideoFile);
 
   // Check if video files already exist
@@ -15,13 +16,10 @@ export default async function seedVideoFiles(count: number = 10): Promise<VideoF
   }
 
   const videoFiles: VideoFile[] = [];
-  const videoHosts = ["youtube.com", "vimeo.com", "dailymotion.com"];
 
   for (let i = 0; i < count; i++) {
     const videoFile = new VideoFile();
-    const host = videoHosts[Math.floor(Math.random() * videoHosts.length)];
-    const videoId = faker.datatype.uuid().substring(0, 11);
-    videoFile.VideoFileUrl = `https://www.${host}/watch?v=${videoId}`;
+    videoFile.VideoFileUrl = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
     videoFiles.push(videoFile);
   }
 

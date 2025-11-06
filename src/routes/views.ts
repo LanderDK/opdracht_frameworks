@@ -83,7 +83,6 @@ const vlogDetail = async (req: Request, res: Response, next: NextFunction) => {
     const comments = await commentDao.findAllByArticleId(id);
     const authors = await userArticleDao.findAuthorsByArticleId(id);
     const test = await vlog.VideoFile;
-    console.log("Vlog Detail - VideoFile:", test);
     res.render("vlog-detail", {
       title: `Vlog Detail - ${vlog.Title}`,
       vlog: vlog,
