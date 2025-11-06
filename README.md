@@ -7,6 +7,10 @@ Studenten: Lander De Kesel & Jason De Ridder
 
 Dit project is een webplatform voor het publiceren van blogs en vlogs. Makers kunnen artikelen en video's delen, en bezoekers kunnen reacties plaatsen die direct in beeld verschijnen. Het doel is om content gemakkelijk te beheren en interactie tussen makers en publiek te stimuleren.
 
+## Testen van de webservice online
+
+De webservice is online beschikbaar. Deze is terug te vinden op `http://157.193.171.84:3000/`. Dit is de hoofdpagina van de applicatie. Er is ook een swaggerpagina opgezet. Hier wordt toegelicht hoe al de routes zijn geïmplementeerd en kunnen deze ook getest worden. Deze pagina is te vinden op `http://157.193.171.84:3000/docs`. Er is geen authenticatie voorzien, wat dus wil zeggen dat er bijvoorbeeld bij het posten van comments manueel een userId moet meegegeven worden in de body van het request.
+
 ## Voldoen aan Project Requirements
 
 ### 1. Datalaag met DAO-objecten
@@ -20,7 +24,7 @@ Het project bevat meerdere DAO-objecten voor het beheren van de datalaag:
 - **UserDAO** (`src/dao/UserDao.ts`): Gebruikersbeheer
 - **UserArticleDAO** (`src/dao/UserArticleDao.ts`): Beheer van n-n relatie tussen gebruikers en artikelen
 
-Elk DAO-object biedt standaard methoden zoals `findAll()`, `findById()`, `create()`, `update()`, en `delete()`.
+De meeste DAO-object bieden standaard methoden zoals `findAll()`, `findById()`, `create()`, `update()`, en `delete()`.
 
 ### 2. Relaties in de datalaag
 
@@ -273,7 +277,3 @@ CORS_MAX_AGE={number} #example: 600
 Het lokaal uitvoeren van dit project vereist de installatie van Docker (docker desktop op Windows 11!).
 
 Indien de bovenstaande .env correct geconfigureerd is, moet `docker compose up -d` uitgevoerd worden in de command line om de service te starten. Dit zou alle containers in de correcte volgorde moeten starten en de web service beschikbaar maken op de `http://localhost:3000`.
-
-## Testen van de webservice online
-
-De webservice is ook online beschikbaar. Deze is terug te vinden op `http://157.193.171.84:3000/`. Dit is de hoofdpagina van de applicatie. Er is ook een swaggerpagina opgezet. Hier wordt toegelicht hoe al de routes zijn geïmplementeerd en kunnen deze ook getest worden. Deze pagina is te vinden op `http://157.193.171.84:3000/docs`. Er is geen authenticatie voorzien, wat dus wil zeggen dat er bijvoorbeeld bij het posten van comments manueel een userId moet meegegeven worden in de body van het request.
